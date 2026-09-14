@@ -2114,6 +2114,25 @@ function getProfile() {
    POSTS
 ================================================= */
 
+function randomPostViews() {
+
+  let views;
+
+  do {
+    views =
+      Math.floor(
+        Math.random() *
+        (70000 - 10000 + 1)
+      ) +
+      10000;
+
+  } while (views % 10 === 0);
+
+  return views;
+
+}
+
+
 function normalizePost(post) {
 
   let images = [];
@@ -2153,6 +2172,18 @@ function normalizePost(post) {
 
     likes:
       Number(post.likes) || 0,
+
+    views:
+      (
+        Number.isFinite(
+          Number(post.views)
+        ) &&
+        Number(post.views) >= 10000 &&
+        Number(post.views) <= 70000 &&
+        Number(post.views) % 10 !== 0
+      )
+        ? Number(post.views)
+        : randomPostViews(),
 
     createdAt:
       post.createdAt ||
@@ -2763,7 +2794,11 @@ function renderPosts() {
       overlay.innerHTML = `
 
         <span>
-          ♥ ${post.likes}
+          ♥ ${formatCount(post.likes)}
+        </span>
+
+        <span>
+          👁 ${formatCount(post.views)}
         </span>
 
         <span>
@@ -3265,6 +3300,9 @@ document
 
         likes:
           0,
+
+        views:
+          randomPostViews(),
 
         createdAt:
           new Date().toISOString()
@@ -4341,7 +4379,7 @@ document
 
 
       post.likes =
-        (post.likes || 0) + 1;
+        (post.likes || 0) + 1000;
 
 
       if (
@@ -4374,14 +4412,18 @@ function updateDetailLikes(
     Number(post.likes) || 0;
 
 
+  const views =
+    Number(post.views) ||
+    randomPostViews();
+
   document.getElementById(
     "detailLikes"
   ).textContent =
-    `♥ ${likes} ${
+    `♥ ${formatCount(likes)} ${
       likes === 1
         ? "like"
         : "likes"
-    }`;
+    } · 👁 ${formatCount(views)} views`;
 
 }
 
