@@ -21,8 +21,8 @@
   --button: #0095f6;
   --input: #f5f5f5;
   --danger: #ed4956;
-  --overlay: rgba(0,0,0,.68);
-  --shadow: 0 10px 35px rgba(0,0,0,.18);
+  --overlay: rgba(0,0,0,.72);
+  --shadow: 0 10px 35px rgba(0,0,0,.2);
 }
 
 body.dark {
@@ -137,7 +137,6 @@ img {
 main {
   width: min(975px, 100%);
   margin: auto;
-
   padding: 20px 20px 80px;
 }
 
@@ -151,7 +150,7 @@ main {
   grid-template-columns: 180px 1fr;
   gap: 55px;
 
-  padding: 25px 20px 45px;
+  padding: 25px 20px 30px;
 }
 
 .avatar-wrapper {
@@ -265,9 +264,7 @@ main {
 
 .bio {
   max-width: 550px;
-
   white-space: pre-wrap;
-
   line-height: 1.45;
 }
 
@@ -280,6 +277,118 @@ main {
 
   color: var(--muted);
   font-size: 12px;
+}
+
+
+/* =========================================
+   STORIES
+========================================= */
+
+.stories-section {
+  padding: 5px 5px 25px;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+}
+
+.stories-section::-webkit-scrollbar {
+  display: none;
+}
+
+.stories-list {
+  display: flex;
+  gap: 18px;
+
+  width: max-content;
+}
+
+.story-item {
+  width: 76px;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--text);
+
+  text-align: center;
+}
+
+.story-ring {
+  width: 70px;
+  height: 70px;
+
+  margin: auto;
+
+  padding: 3px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #feda75,
+      #fa7e1e,
+      #d62976,
+      #962fbf,
+      #4f5bd5
+    );
+}
+
+.story-ring-inner {
+  width: 100%;
+  height: 100%;
+
+  padding: 3px;
+
+  border-radius: 50%;
+
+  background: var(--card);
+}
+
+.story-image {
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+.story-label {
+  display: block;
+
+  margin-top: 7px;
+
+  overflow: hidden;
+
+  font-size: 12px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.add-story .story-ring {
+  background: var(--border);
+}
+
+.add-story-inner {
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--card);
+
+  font-size: 30px;
+}
+
+.story-delete {
+  display: none;
 }
 
 
@@ -709,10 +818,6 @@ textarea.form-control {
   z-index: 5;
 }
 
-.carousel-arrow:hover {
-  background: white;
-}
-
 .carousel-prev {
   left: 12px;
 }
@@ -801,6 +906,175 @@ textarea.form-control {
 
 
 /* =========================================
+   STORY VIEWER
+========================================= */
+
+.story-viewer {
+  position: relative;
+
+  width: min(430px, 100%);
+  height: min(760px, 90vh);
+
+  overflow: hidden;
+
+  background: #000;
+
+  border-radius: 12px;
+
+  box-shadow: var(--shadow);
+}
+
+.story-viewer-image {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  background: #000;
+}
+
+.story-top {
+  position: absolute;
+
+  top: 12px;
+  left: 12px;
+  right: 12px;
+
+  z-index: 10;
+}
+
+.story-progress {
+  display: flex;
+  gap: 4px;
+
+  width: 100%;
+}
+
+.story-progress-bar {
+  flex: 1;
+
+  height: 3px;
+
+  border-radius: 10px;
+
+  background: rgba(255,255,255,.4);
+
+  overflow: hidden;
+}
+
+.story-progress-bar.active {
+  background: white;
+}
+
+.story-viewer-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 12px;
+
+  color: white;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-shadow: 0 1px 4px #000;
+}
+
+.story-viewer-avatar {
+  width: 32px;
+  height: 32px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border: 2px solid white;
+}
+
+.story-caption {
+  position: absolute;
+
+  left: 20px;
+  right: 20px;
+  bottom: 35px;
+
+  z-index: 10;
+
+  color: white;
+
+  text-align: center;
+
+  font-size: 16px;
+  line-height: 1.45;
+
+  text-shadow: 0 1px 5px #000;
+
+  white-space: pre-wrap;
+}
+
+.story-nav {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+
+  z-index: 5;
+}
+
+.story-nav-left,
+.story-nav-right {
+  width: 50%;
+  height: 100%;
+
+  border: 0;
+
+  background: transparent;
+}
+
+.story-close {
+  position: absolute;
+
+  top: 35px;
+  right: 15px;
+
+  z-index: 20;
+
+  width: 35px;
+  height: 35px;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: rgba(0,0,0,.4);
+
+  color: white;
+
+  font-size: 25px;
+}
+
+.story-delete-btn {
+  position: absolute;
+
+  right: 18px;
+  bottom: 18px;
+
+  z-index: 20;
+
+  padding: 8px 12px;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: rgba(0,0,0,.65);
+
+  color: white;
+
+  font-size: 12px;
+}
+
+
+/* =========================================
    TOAST
 ========================================= */
 
@@ -810,7 +1084,7 @@ textarea.form-control {
   bottom: 25px;
   left: 50%;
 
-  z-index: 200;
+  z-index: 300;
 
   transform:
     translateX(-50%)
@@ -856,7 +1130,7 @@ textarea.form-control {
 
     gap: 20px;
 
-    padding: 20px 15px 30px;
+    padding: 20px 15px 25px;
   }
 
   .avatar,
@@ -912,6 +1186,13 @@ textarea.form-control {
   .post-detail-info {
     min-height: 250px;
   }
+
+  .story-viewer {
+    width: 100%;
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
+  }
 }
 </style>
 </head>
@@ -919,7 +1200,9 @@ textarea.form-control {
 
 <body>
 
-<!-- TOP BAR -->
+<!-- =========================================
+     TOP BAR
+========================================= -->
 
 <header class="topbar">
 
@@ -933,17 +1216,30 @@ textarea.form-control {
 
       <button
         class="icon-btn"
+        id="addStoryTop"
+        title="Add story"
+        type="button"
+      >
+        ◎
+      </button>
+
+      <button
+        class="icon-btn"
         id="addPostTop"
         title="Create post"
         type="button"
-      >＋</button>
+      >
+        ＋
+      </button>
 
       <button
         class="icon-btn"
         id="themeToggle"
         title="Toggle theme"
         type="button"
-      >☾</button>
+      >
+        ☾
+      </button>
 
     </div>
 
@@ -952,7 +1248,9 @@ textarea.form-control {
 </header>
 
 
-<!-- MAIN -->
+<!-- =========================================
+     MAIN
+========================================= -->
 
 <main>
 
@@ -1046,7 +1344,21 @@ textarea.form-control {
   </section>
 
 
-  <!-- NAV -->
+  <!-- =======================================
+       STORIES
+  ======================================== -->
+
+  <section class="stories-section">
+
+    <div
+      class="stories-list"
+      id="storiesList"
+    ></div>
+
+  </section>
+
+
+  <!-- POSTS NAV -->
 
   <div class="posts-nav">
 
@@ -1057,9 +1369,7 @@ textarea.form-control {
       ▦ POSTS
     </button>
 
-    <button
-      type="button"
-    >
+    <button type="button">
       👤 PROFILE
     </button>
 
@@ -1076,7 +1386,9 @@ textarea.form-control {
 </main>
 
 
-<!-- EDIT PROFILE -->
+<!-- =========================================
+     EDIT PROFILE MODAL
+========================================= -->
 
 <div
   class="modal-backdrop"
@@ -1093,7 +1405,9 @@ textarea.form-control {
         class="close-btn"
         data-close="profileModal"
         type="button"
-      >×</button>
+      >
+        ×
+      </button>
 
     </div>
 
@@ -1148,10 +1462,6 @@ textarea.form-control {
             maxlength="150"
             placeholder="Tell people about yourself..."
           ></textarea>
-
-          <small style="color:var(--muted)">
-            Your bio is saved when you press Save changes.
-          </small>
 
         </div>
 
@@ -1218,7 +1528,9 @@ textarea.form-control {
 </div>
 
 
-<!-- CREATE POST -->
+<!-- =========================================
+     CREATE POST MODAL
+========================================= -->
 
 <div
   class="modal-backdrop"
@@ -1235,7 +1547,9 @@ textarea.form-control {
         class="close-btn"
         data-close="postModal"
         type="button"
-      >×</button>
+      >
+        ×
+      </button>
 
     </div>
 
@@ -1314,7 +1628,114 @@ textarea.form-control {
 </div>
 
 
-<!-- POST DETAIL -->
+<!-- =========================================
+     CREATE STORY MODAL
+========================================= -->
+
+<div
+  class="modal-backdrop"
+  id="storyCreateModal"
+>
+
+  <div class="modal">
+
+    <div class="modal-header">
+
+      <h2>Add to your story</h2>
+
+      <button
+        class="close-btn"
+        data-close="storyCreateModal"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="storyForm">
+
+      <div class="modal-body">
+
+        <div class="form-group">
+
+          <label class="file-label">
+
+            📸 Choose one or more pictures
+
+            <input
+              type="file"
+              id="storyImage"
+              accept="image/*"
+              multiple
+              required
+            >
+
+          </label>
+
+
+          <div
+            class="multi-preview"
+            id="storyPreview"
+          ></div>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="storyCaption">
+            Story caption
+          </label>
+
+          <textarea
+            class="form-control"
+            id="storyCaption"
+            maxlength="300"
+            placeholder="Add something to your story..."
+          ></textarea>
+
+        </div>
+
+
+        <small style="color:var(--muted)">
+          Stories stay for 24 hours.
+        </small>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn"
+          data-close="storyCreateModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          id="shareStoryBtn"
+        >
+          Add to story
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================
+     POST DETAIL
+========================================= -->
 
 <div
   class="modal-backdrop"
@@ -1331,7 +1752,9 @@ textarea.form-control {
         class="close-btn"
         data-close="detailModal"
         type="button"
-      >×</button>
+      >
+        ×
+      </button>
 
     </div>
 
@@ -1435,6 +1858,92 @@ textarea.form-control {
 </div>
 
 
+<!-- =========================================
+     STORY VIEWER
+========================================= -->
+
+<div
+  class="modal-backdrop"
+  id="storyViewerModal"
+>
+
+  <div class="story-viewer">
+
+    <div class="story-top">
+
+      <div
+        class="story-progress"
+        id="storyProgress"
+      ></div>
+
+
+      <div class="story-viewer-user">
+
+        <div id="storyViewerAvatar"></div>
+
+        <span id="storyViewerUsername">
+          @username
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <img
+      class="story-viewer-image"
+      id="storyViewerImage"
+      alt="Story"
+    >
+
+
+    <div
+      class="story-caption"
+      id="storyViewerCaption"
+    ></div>
+
+
+    <button
+      class="story-close"
+      id="storyClose"
+      type="button"
+    >
+      ×
+    </button>
+
+
+    <div class="story-nav">
+
+      <button
+        class="story-nav-left"
+        id="storyPrev"
+        type="button"
+        aria-label="Previous story"
+      ></button>
+
+      <button
+        class="story-nav-right"
+        id="storyNext"
+        type="button"
+        aria-label="Next story"
+      ></button>
+
+    </div>
+
+
+    <button
+      class="story-delete-btn"
+      id="deleteStoryBtn"
+      type="button"
+    >
+      Delete story
+    </button>
+
+  </div>
+
+</div>
+
+
 <!-- TOAST -->
 
 <div
@@ -1446,18 +1955,20 @@ textarea.form-control {
 <script>
 
 /* =================================================
-   PRIVATE PROFILE APP
-   Everything is stored in localStorage.
-================================================= */
-
-
-/* =================================================
    STORAGE
 ================================================= */
 
-const PROFILE_KEY = "private_profile_data_v4";
-const POSTS_KEY = "private_profile_posts_v4";
-const THEME_KEY = "private_profile_theme_v4";
+const PROFILE_KEY =
+  "private_profile_data_v5";
+
+const POSTS_KEY =
+  "private_profile_posts_v5";
+
+const STORIES_KEY =
+  "private_profile_stories_v1";
+
+const THEME_KEY =
+  "private_profile_theme_v5";
 
 
 /* =================================================
@@ -1475,30 +1986,27 @@ const defaultProfile = {
 
 
 /* =================================================
-   SAFE JSON
+   STORAGE HELPERS
 ================================================= */
 
 function readJSON(key) {
 
   try {
 
-    const value = localStorage.getItem(key);
+    const value =
+      localStorage.getItem(key);
 
-    if (!value) {
+    if (!value)
       return null;
-    }
 
     return JSON.parse(value);
 
-  } catch (error) {
-
-    console.error(
-      "Could not read storage:",
-      error
-    );
+  } catch {
 
     return null;
+
   }
+
 }
 
 
@@ -1516,29 +2024,42 @@ function writeJSON(key, value) {
   } catch (error) {
 
     console.error(
-      "Could not save:",
+      "Storage error:",
       error
     );
 
+    showToast(
+      "Browser storage is full. Try using smaller pictures."
+    );
+
     return false;
+
   }
+
 }
 
 
 /* =================================================
-   MIGRATE OLD PROFILE DATA
+   PROFILE
 ================================================= */
 
 function getProfile() {
 
   let saved =
-    readJSON(PROFILE_KEY);
+    readJSON(
+      PROFILE_KEY
+    );
 
 
-  /*
-     If the new storage doesn't exist,
-     look for the older versions.
-  */
+  if (!saved) {
+
+    saved =
+      readJSON(
+        "private_profile_data_v4"
+      );
+
+  }
+
 
   if (!saved) {
 
@@ -1550,45 +2071,33 @@ function getProfile() {
   }
 
 
-  if (!saved) {
-
-    saved = {};
-
-  }
-
-
   const profile = {
     ...defaultProfile,
-    ...saved
+    ...(saved || {})
   };
 
 
-  /*
-     Make sure the requested numbers
-     always exist.
-  */
-
   if (
-    typeof profile.followers !== "number"
+    typeof profile.followers !==
+    "number"
   ) {
 
-    profile.followers = 17000;
+    profile.followers =
+      17000;
 
   }
 
 
   if (
-    typeof profile.following !== "number"
+    typeof profile.following !==
+    "number"
   ) {
 
-    profile.following = 851;
+    profile.following =
+      851;
 
   }
 
-
-  /*
-     Save migrated profile immediately.
-  */
 
   writeJSON(
     PROFILE_KEY,
@@ -1597,6 +2106,7 @@ function getProfile() {
 
 
   return profile;
+
 }
 
 
@@ -1606,18 +2116,13 @@ function getProfile() {
 
 function normalizePost(post) {
 
-  /*
-     Older version used:
-        image: "..."
-
-     New version uses:
-        images: ["...", "..."]
-  */
-
   let images = [];
 
+
   if (
-    Array.isArray(post.images)
+    Array.isArray(
+      post.images
+    )
   ) {
 
     images =
@@ -1641,37 +2146,40 @@ function normalizePost(post) {
       Date.now().toString(),
 
     images:
-
       images,
 
     caption:
-      post.caption ||
-      "",
+      post.caption || "",
 
     likes:
-      Number.isFinite(
-        Number(post.likes)
-      )
-        ? Number(post.likes)
-        : 0,
+      Number(post.likes) || 0,
 
     createdAt:
       post.createdAt ||
       new Date().toISOString()
 
   };
+
 }
 
 
 function getPosts() {
 
   let posts =
-    readJSON(POSTS_KEY);
+    readJSON(
+      POSTS_KEY
+    );
 
 
-  /*
-     Migrate posts from v3.
-  */
+  if (!Array.isArray(posts)) {
+
+    posts =
+      readJSON(
+        "private_profile_posts_v4"
+      );
+
+  }
+
 
   if (!Array.isArray(posts)) {
 
@@ -1696,12 +2204,6 @@ function getPosts() {
     );
 
 
-  /*
-     Save normalized data.
-     This means old single-image posts
-     are converted to the new format.
-  */
-
   writeJSON(
     POSTS_KEY,
     posts
@@ -1709,34 +2211,88 @@ function getPosts() {
 
 
   return posts;
+
 }
 
 
 function savePosts(posts) {
 
-  const normalized =
+  return writeJSON(
+    POSTS_KEY,
     posts.map(
       normalizePost
+    )
+  );
+
+}
+
+
+/* =================================================
+   STORIES
+================================================= */
+
+function cleanStories() {
+
+  let stories =
+    readJSON(
+      STORIES_KEY
     );
 
 
-  const saved =
-    writeJSON(
-      POSTS_KEY,
-      normalized
-    );
+  if (!Array.isArray(stories)) {
 
-
-  if (!saved) {
-
-    showToast(
-      "Could not save. Your browser may be out of storage."
-    );
+    stories = [];
 
   }
 
 
-  return saved;
+  const now =
+    Date.now();
+
+
+  /*
+     Remove stories older than 24 hours.
+  */
+
+  stories =
+    stories.filter(
+      story => {
+
+        return (
+          now -
+          Number(story.createdAt)
+        ) <
+        24 * 60 * 60 * 1000;
+
+      }
+    );
+
+
+  writeJSON(
+    STORIES_KEY,
+    stories
+  );
+
+
+  return stories;
+
+}
+
+
+function getStories() {
+
+  return cleanStories();
+
+}
+
+
+function saveStories(stories) {
+
+  return writeJSON(
+    STORIES_KEY,
+    stories
+  );
+
 }
 
 
@@ -1784,6 +2340,11 @@ const postGrid =
     "postGrid"
   );
 
+const storiesList =
+  document.getElementById(
+    "storiesList"
+  );
+
 const toast =
   document.getElementById(
     "toast"
@@ -1794,7 +2355,7 @@ const toast =
    NUMBER FORMAT
 ================================================= */
 
-function formatFollowers(number) {
+function formatCount(number) {
 
   number =
     Number(number) || 0;
@@ -1837,6 +2398,7 @@ function formatFollowers(number) {
 
 
   return number.toLocaleString();
+
 }
 
 
@@ -1865,22 +2427,14 @@ function renderProfile() {
     "Add a bio to your profile.";
 
 
-  /*
-     17,000 becomes 17K.
-  */
-
   followersCount.textContent =
-    formatFollowers(
+    formatCount(
       profile.followers
     );
 
 
-  /*
-     851 remains 851.
-  */
-
   followingCount.textContent =
-    formatFollowers(
+    formatCount(
       profile.following
     );
 
@@ -1914,12 +2468,137 @@ function renderProfile() {
   }
 
 
-  const posts =
-    getPosts();
-
-
   postCount.textContent =
-    posts.length;
+    getPosts().length;
+
+}
+
+
+/* =================================================
+   RENDER STORIES
+================================================= */
+
+function renderStories() {
+
+  const stories =
+    getStories();
+
+
+  storiesList.innerHTML = "";
+
+
+  /*
+     Always show Add Story.
+  */
+
+  const add =
+    document.createElement(
+      "button"
+    );
+
+
+  add.className =
+    "story-item add-story";
+
+
+  add.type =
+    "button";
+
+
+  add.innerHTML = `
+
+    <div class="story-ring">
+
+      <div class="story-ring-inner">
+
+        <div class="add-story-inner">
+          ＋
+        </div>
+
+      </div>
+
+    </div>
+
+    <span class="story-label">
+      Your story
+    </span>
+
+  `;
+
+
+  add.addEventListener(
+    "click",
+    openStoryCreate
+  );
+
+
+  storiesList.appendChild(
+    add
+  );
+
+
+  /*
+     Show each active story.
+  */
+
+  stories.forEach(
+    story => {
+
+      const item =
+        document.createElement(
+          "button"
+        );
+
+
+      item.className =
+        "story-item";
+
+
+      item.type =
+        "button";
+
+
+      item.innerHTML = `
+
+        <div class="story-ring">
+
+          <div class="story-ring-inner">
+
+            <img
+              class="story-image"
+              src="${story.images[0]}"
+              alt="Story"
+            >
+
+          </div>
+
+        </div>
+
+        <span class="story-label">
+          Your story
+        </span>
+
+      `;
+
+
+      item.addEventListener(
+        "click",
+        () => {
+
+          openStoryViewer(
+            story.id
+          );
+
+        }
+      );
+
+
+      storiesList.appendChild(
+        item
+      );
+
+    }
+  );
 
 }
 
@@ -1980,150 +2659,147 @@ function renderPosts() {
 
 
     return;
+
   }
 
 
-  posts.forEach(post => {
+  posts.forEach(
+    post => {
 
-    const element =
-      document.createElement(
-        "article"
-      );
-
-
-    element.className =
-      "post";
-
-
-    const images =
-      Array.isArray(post.images)
-        ? post.images
-        : [];
-
-
-    const firstImage =
-      images[0];
-
-
-    if (firstImage) {
-
-      const image =
+      const element =
         document.createElement(
-          "img"
+          "article"
         );
 
 
-      image.src =
-        firstImage;
-
-      image.alt =
-        post.caption ||
-        "Post";
-
-      image.loading =
-        "lazy";
+      element.className =
+        "post";
 
 
-      element.appendChild(
-        image
-      );
+      const images =
+        post.images || [];
 
-    } else {
 
-      const text =
-        document.createElement(
-          "div"
+      if (images[0]) {
+
+        const image =
+          document.createElement(
+            "img"
+          );
+
+
+        image.src =
+          images[0];
+
+        image.alt =
+          post.caption ||
+          "Post";
+
+        image.loading =
+          "lazy";
+
+
+        element.appendChild(
+          image
         );
 
+      } else {
 
-      text.className =
-        "text-post";
-
-
-      text.textContent =
-        post.caption ||
-        "Post";
+        const text =
+          document.createElement(
+            "div"
+          );
 
 
-      element.appendChild(
-        text
-      );
+        text.className =
+          "text-post";
 
-    }
+        text.textContent =
+          post.caption ||
+          "Post";
 
 
-    if (
-      images.length > 1
-    ) {
-
-      const multiple =
-        document.createElement(
-          "div"
+        element.appendChild(
+          text
         );
 
-
-      multiple.className =
-        "post-multiple";
-
-
-      multiple.textContent =
-        "▧";
-
-
-      element.appendChild(
-        multiple
-      );
-
-    }
-
-
-    const overlay =
-      document.createElement(
-        "div"
-      );
-
-
-    overlay.className =
-      "post-overlay";
-
-
-    overlay.innerHTML = `
-
-      <span>
-        ♥ ${post.likes}
-      </span>
-
-      <span>
-        ${
-          images.length > 1
-            ? "📷 " + images.length
-            : "📷"
-        }
-      </span>
-
-    `;
-
-
-    element.appendChild(
-      overlay
-    );
-
-
-    element.addEventListener(
-      "click",
-      () => {
-        openPostDetail(
-          post.id
-        );
       }
-    );
 
 
-    postGrid.appendChild(
-      element
-    );
+      if (
+        images.length > 1
+      ) {
 
-  });
+        const multiple =
+          document.createElement(
+            "div"
+          );
+
+
+        multiple.className =
+          "post-multiple";
+
+        multiple.textContent =
+          "▧";
+
+
+        element.appendChild(
+          multiple
+        );
+
+      }
+
+
+      const overlay =
+        document.createElement(
+          "div"
+        );
+
+
+      overlay.className =
+        "post-overlay";
+
+
+      overlay.innerHTML = `
+
+        <span>
+          ♥ ${post.likes}
+        </span>
+
+        <span>
+          ${
+            images.length > 1
+              ? "📷 " + images.length
+              : "📷"
+          }
+        </span>
+
+      `;
+
+
+      element.appendChild(
+        overlay
+      );
+
+
+      element.addEventListener(
+        "click",
+        () => {
+
+          openPostDetail(
+            post.id
+          );
+
+        }
+      );
+
+
+      postGrid.appendChild(
+        element
+      );
+
+    }
+  );
 
 }
 
@@ -2135,6 +2811,8 @@ function renderPosts() {
 function render() {
 
   renderProfile();
+
+  renderStories();
 
   renderPosts();
 
@@ -2178,7 +2856,8 @@ document
         profile.bio || "";
 
 
-      newAvatar = null;
+      newAvatar =
+        null;
 
 
       const preview =
@@ -2225,7 +2904,7 @@ document
   )
   .addEventListener(
     "change",
-    function() {
+    async function() {
 
       const file =
         this.files[0];
@@ -2235,44 +2914,34 @@ document
         return;
 
 
-      resizeImage(
-        file,
-        600
-      )
-      .then(
-        dataURL => {
+      try {
 
-          newAvatar =
-            dataURL;
-
-
-          document.getElementById(
-            "profilePreviewImage"
-          ).src =
-            dataURL;
-
-
-          document.getElementById(
-            "profilePreview"
-          ).classList.add(
-            "show"
+        newAvatar =
+          await resizeImage(
+            file,
+            600
           );
 
-        }
-      )
-      .catch(
-        error => {
 
-          console.error(
-            error
-          );
+        document.getElementById(
+          "profilePreviewImage"
+        ).src =
+          newAvatar;
 
-          showToast(
-            "Could not load that picture."
-          );
 
-        }
-      );
+        document.getElementById(
+          "profilePreview"
+        ).classList.add(
+          "show"
+        );
+
+      } catch {
+
+        showToast(
+          "Could not load that picture."
+        );
+
+      }
 
     }
   );
@@ -2297,13 +2966,15 @@ document
         getProfile();
 
 
-      const name =
+      profile.name =
         document.getElementById(
           "profileName"
-        ).value.trim();
+        ).value.trim()
+        ||
+        "Your Name";
 
 
-      const username =
+      profile.username =
         document.getElementById(
           "profileUsername"
         ).value
@@ -2316,33 +2987,21 @@ document
           /^@/,
           ""
         )
-        .toLowerCase();
-
-
-      const bio =
-        document.getElementById(
-          "profileBio"
-        ).value;
-
-
-      /*
-         IMPORTANT:
-         Save the bio exactly as entered,
-         including line breaks.
-      */
-
-      profile.name =
-        name ||
-        "Your Name";
-
-
-      profile.username =
-        username ||
+        .toLowerCase()
+        ||
         "username";
 
 
+      /*
+         This is the important part:
+         the bio is saved every time
+         Save changes is pressed.
+      */
+
       profile.bio =
-        bio;
+        document.getElementById(
+          "profileBio"
+        ).value;
 
 
       if (
@@ -2355,25 +3014,20 @@ document
       }
 
 
-      const saved =
-        writeJSON(
+      if (
+        !writeJSON(
           PROFILE_KEY,
           profile
-        );
-
-
-      if (!saved) {
-
-        showToast(
-          "Could not save your profile."
-        );
+        )
+      ) {
 
         return;
 
       }
 
 
-      newAvatar = null;
+      newAvatar =
+        null;
 
 
       closeModal(
@@ -2421,7 +3075,8 @@ document
 
 function openPostModal() {
 
-  selectedPostImages = [];
+  selectedPostImages =
+    [];
 
 
   document
@@ -2433,7 +3088,8 @@ function openPostModal() {
 
   document.getElementById(
     "postPreview"
-  ).innerHTML = "";
+  ).innerHTML =
+    "";
 
 
   openModal(
@@ -2444,7 +3100,7 @@ function openPostModal() {
 
 
 /* =================================================
-   MULTIPLE IMAGE SELECTION
+   POST IMAGES
 ================================================= */
 
 document
@@ -2465,39 +3121,20 @@ document
         return;
 
 
-      const preview =
-        document.getElementById(
-          "postPreview"
-        );
-
-
-      preview.innerHTML = "";
-
-
-      selectedPostImages =
-        [];
-
-
-      const shareButton =
+      const button =
         document.getElementById(
           "sharePostBtn"
         );
 
 
-      shareButton.disabled =
+      button.disabled =
         true;
 
-
-      shareButton.textContent =
-        "Loading pictures...";
+      button.textContent =
+        "Loading...";
 
 
       try {
-
-        /*
-           Promise.all keeps the
-           selected image order.
-        */
 
         selectedPostImages =
           await Promise.all(
@@ -2513,39 +3150,27 @@ document
 
         renderPostPreview();
 
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
-
+      } catch {
 
         selectedPostImages =
           [];
 
-
         showToast(
-          "One of the pictures could not be loaded."
+          "Could not load one of the pictures."
         );
 
       }
 
 
-      shareButton.disabled =
+      button.disabled =
         false;
 
-
-      shareButton.textContent =
+      button.textContent =
         "Share";
 
     }
   );
 
-
-/* =================================================
-   PREVIEW
-================================================= */
 
 function renderPostPreview() {
 
@@ -2555,7 +3180,8 @@ function renderPostPreview() {
     );
 
 
-  preview.innerHTML = "";
+  preview.innerHTML =
+    "";
 
 
   selectedPostImages.forEach(
@@ -2601,7 +3227,8 @@ document
 
 
       if (
-        selectedPostImages.length === 0
+        selectedPostImages.length ===
+        0
       ) {
 
         showToast(
@@ -2613,18 +3240,18 @@ document
       }
 
 
-      const caption =
-        document.getElementById(
-          "postCaption"
-        ).value;
+      const posts =
+        getPosts();
 
 
       const post = {
 
         id:
           Date.now().toString()
-          + "-"
-          + Math.random()
+          +
+          "-"
+          +
+          Math.random()
             .toString(36)
             .slice(2),
 
@@ -2632,7 +3259,9 @@ document
           [...selectedPostImages],
 
         caption:
-          caption,
+          document.getElementById(
+            "postCaption"
+          ).value,
 
         likes:
           0,
@@ -2643,57 +3272,33 @@ document
       };
 
 
-      const posts =
-        getPosts();
-
-
       posts.unshift(
         post
       );
 
 
       /*
-         SAVE FIRST.
-         Only close the window if
-         saving actually succeeded.
+         Save the post before
+         closing the modal.
       */
 
-      const saved =
-        savePosts(
-          posts
-        );
-
-
-      if (!saved) {
+      if (
+        !savePosts(posts)
+      ) {
 
         return;
 
       }
 
 
-      /*
-         Clear the temporary
-         selected images.
-      */
-
       selectedPostImages =
         [];
-
-
-      document.getElementById(
-        "postPreview"
-      ).innerHTML = "";
 
 
       closeModal(
         "postModal"
       );
 
-
-      /*
-         Immediately redraw the
-         profile and post grid.
-      */
 
       render();
 
@@ -2707,6 +3312,763 @@ document
 
 
 /* =================================================
+   STORY CREATION
+================================================= */
+
+let selectedStoryImages = [];
+
+
+document
+  .getElementById(
+    "addStoryTop"
+  )
+  .addEventListener(
+    "click",
+    openStoryCreate
+  );
+
+
+function openStoryCreate() {
+
+  selectedStoryImages =
+    [];
+
+
+  document
+    .getElementById(
+      "storyForm"
+    )
+    .reset();
+
+
+  document.getElementById(
+    "storyPreview"
+  ).innerHTML =
+    "";
+
+
+  openModal(
+    "storyCreateModal"
+  );
+
+}
+
+
+/* =================================================
+   STORY IMAGE SELECTION
+================================================= */
+
+document
+  .getElementById(
+    "storyImage"
+  )
+  .addEventListener(
+    "change",
+    async function() {
+
+      const files =
+        Array.from(
+          this.files
+        );
+
+
+      if (!files.length)
+        return;
+
+
+      const button =
+        document.getElementById(
+          "shareStoryBtn"
+        );
+
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Loading...";
+
+
+      try {
+
+        selectedStoryImages =
+          await Promise.all(
+            files.map(
+              file =>
+                resizeImage(
+                  file,
+                  1400
+                )
+            )
+          );
+
+
+        renderStoryPreview();
+
+      } catch {
+
+        selectedStoryImages =
+          [];
+
+        showToast(
+          "Could not load one of the pictures."
+        );
+
+      }
+
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "Add to story";
+
+    }
+  );
+
+
+function renderStoryPreview() {
+
+  const preview =
+    document.getElementById(
+      "storyPreview"
+    );
+
+
+  preview.innerHTML =
+    "";
+
+
+  selectedStoryImages.forEach(
+    (image, index) => {
+
+      const img =
+        document.createElement(
+          "img"
+        );
+
+
+      img.src =
+        image;
+
+
+      img.alt =
+        `Story image ${index + 1}`;
+
+
+      preview.appendChild(
+        img
+      );
+
+    }
+  );
+
+}
+
+
+/* =================================================
+   SAVE STORY
+================================================= */
+
+document
+  .getElementById(
+    "storyForm"
+  )
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+
+      if (
+        selectedStoryImages.length ===
+        0
+      ) {
+
+        showToast(
+          "Choose at least one picture."
+        );
+
+        return;
+
+      }
+
+
+      const stories =
+        getStories();
+
+
+      const story = {
+
+        id:
+          Date.now().toString()
+          +
+          "-"
+          +
+          Math.random()
+            .toString(36)
+            .slice(2),
+
+        images:
+          [...selectedStoryImages],
+
+        caption:
+          document.getElementById(
+            "storyCaption"
+          ).value,
+
+        createdAt:
+          Date.now()
+
+      };
+
+
+      stories.push(
+        story
+      );
+
+
+      /*
+         Story is saved permanently
+         until its 24-hour expiration.
+      */
+
+      if (
+        !saveStories(
+          stories
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      selectedStoryImages =
+        [];
+
+
+      closeModal(
+        "storyCreateModal"
+      );
+
+
+      renderStories();
+
+
+      showToast(
+        "Added to your story!"
+      );
+
+    }
+  );
+
+
+/* =================================================
+   STORY VIEWER
+================================================= */
+
+let currentStoryId = null;
+let currentStoryIndex = 0;
+
+
+function openStoryViewer(
+  storyId
+) {
+
+  const stories =
+    getStories();
+
+
+  const story =
+    stories.find(
+      item =>
+        item.id === storyId
+    );
+
+
+  if (!story)
+    return;
+
+
+  currentStoryId =
+    storyId;
+
+
+  currentStoryIndex =
+    0;
+
+
+  renderStoryViewer();
+
+
+  openModal(
+    "storyViewerModal"
+  );
+
+}
+
+
+function renderStoryViewer() {
+
+  const stories =
+    getStories();
+
+
+  const story =
+    stories.find(
+      item =>
+        item.id ===
+        currentStoryId
+    );
+
+
+  if (!story) {
+
+    closeModal(
+      "storyViewerModal"
+    );
+
+    return;
+
+  }
+
+
+  const images =
+    story.images || [];
+
+
+  if (!images.length)
+    return;
+
+
+  if (
+    currentStoryIndex >=
+    images.length
+  ) {
+
+    currentStoryIndex =
+      images.length - 1;
+
+  }
+
+
+  document.getElementById(
+    "storyViewerImage"
+  ).src =
+    images[
+      currentStoryIndex
+    ];
+
+
+  document.getElementById(
+    "storyViewerCaption"
+  ).textContent =
+    story.caption || "";
+
+
+  const profile =
+    getProfile();
+
+
+  document.getElementById(
+    "storyViewerUsername"
+  ).textContent =
+    "@" +
+    (
+      profile.username ||
+      "username"
+    );
+
+
+  const avatar =
+    document.getElementById(
+      "storyViewerAvatar"
+    );
+
+
+  if (profile.avatar) {
+
+    avatar.innerHTML = `
+
+      <img
+        class="story-viewer-avatar"
+        src="${profile.avatar}"
+        alt=""
+      >
+
+    `;
+
+  } else {
+
+    avatar.innerHTML = `
+
+      <div
+        class="story-viewer-avatar"
+        style="
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          background:linear-gradient(
+            135deg,
+            #833ab4,
+            #fd1d1d,
+            #fcb045
+          );
+          color:white;
+          font-size:12px;
+        "
+      >
+        ${escapeHTML(
+          getInitials(
+            profile.name
+          )
+        )}
+      </div>
+
+    `;
+
+  }
+
+
+  const progress =
+    document.getElementById(
+      "storyProgress"
+    );
+
+
+  progress.innerHTML =
+    "";
+
+
+  images.forEach(
+    (_, index) => {
+
+      const bar =
+        document.createElement(
+          "div"
+        );
+
+
+      bar.className =
+        "story-progress-bar";
+
+
+      if (
+        index <=
+        currentStoryIndex
+      ) {
+
+        bar.classList.add(
+          "active"
+        );
+
+      }
+
+
+      progress.appendChild(
+        bar
+      );
+
+    }
+  );
+
+}
+
+
+/* =================================================
+   STORY NEXT
+================================================= */
+
+function nextStory() {
+
+  const stories =
+    getStories();
+
+
+  const story =
+    stories.find(
+      item =>
+        item.id ===
+        currentStoryId
+    );
+
+
+  if (!story)
+    return;
+
+
+  if (
+    currentStoryIndex <
+    story.images.length - 1
+  ) {
+
+    currentStoryIndex++;
+
+    renderStoryViewer();
+
+    return;
+
+  }
+
+
+  /*
+     If this story is finished,
+     move to the next story.
+  */
+
+  const index =
+    stories.findIndex(
+      item =>
+        item.id ===
+        currentStoryId
+    );
+
+
+  if (
+    index <
+    stories.length - 1
+  ) {
+
+    currentStoryId =
+      stories[index + 1].id;
+
+    currentStoryIndex =
+      0;
+
+    renderStoryViewer();
+
+  } else {
+
+    closeModal(
+      "storyViewerModal"
+    );
+
+  }
+
+}
+
+
+/* =================================================
+   STORY PREVIOUS
+================================================= */
+
+function previousStory() {
+
+  const stories =
+    getStories();
+
+
+  const story =
+    stories.find(
+      item =>
+        item.id ===
+        currentStoryId
+    );
+
+
+  if (!story)
+    return;
+
+
+  if (
+    currentStoryIndex > 0
+  ) {
+
+    currentStoryIndex--;
+
+    renderStoryViewer();
+
+    return;
+
+  }
+
+
+  const index =
+    stories.findIndex(
+      item =>
+        item.id ===
+        currentStoryId
+    );
+
+
+  if (
+    index > 0
+  ) {
+
+    currentStoryId =
+      stories[index - 1].id;
+
+
+    const previous =
+      stories[index - 1];
+
+
+    currentStoryIndex =
+      previous.images.length - 1;
+
+
+    renderStoryViewer();
+
+  }
+
+}
+
+
+/* =================================================
+   STORY BUTTONS
+================================================= */
+
+document
+  .getElementById(
+    "storyNext"
+  )
+  .addEventListener(
+    "click",
+    nextStory
+  );
+
+
+document
+  .getElementById(
+    "storyPrev"
+  )
+  .addEventListener(
+    "click",
+    previousStory
+  );
+
+
+document
+  .getElementById(
+    "storyClose"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        "storyViewerModal"
+      );
+
+    }
+  );
+
+
+/* =================================================
+   DELETE STORY
+================================================= */
+
+document
+  .getElementById(
+    "deleteStoryBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      if (!currentStoryId)
+        return;
+
+
+      if (
+        !confirm(
+          "Delete this story?"
+        )
+      )
+        return;
+
+
+      const stories =
+        getStories();
+
+
+      const remaining =
+        stories.filter(
+          story =>
+            story.id !==
+            currentStoryId
+        );
+
+
+      if (
+        !saveStories(
+          remaining
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      currentStoryId =
+        null;
+
+
+      closeModal(
+        "storyViewerModal"
+      );
+
+
+      renderStories();
+
+
+      showToast(
+        "Story deleted."
+      );
+
+    }
+  );
+
+
+/* =================================================
+   STORY KEYBOARD
+================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    const viewer =
+      document.getElementById(
+        "storyViewerModal"
+      );
+
+
+    if (
+      !viewer.classList.contains(
+        "show"
+      )
+    )
+      return;
+
+
+    if (
+      event.key ===
+      "ArrowRight"
+    ) {
+
+      nextStory();
+
+    }
+
+
+    if (
+      event.key ===
+      "ArrowLeft"
+    ) {
+
+      previousStory();
+
+    }
+
+  }
+);
+
+
+/* =================================================
    POST DETAIL
 ================================================= */
 
@@ -2715,7 +4077,9 @@ let currentPostImages = [];
 let currentImageIndex = 0;
 
 
-function openPostDetail(id) {
+function openPostDetail(
+  id
+) {
 
   const posts =
     getPosts();
@@ -2737,11 +4101,7 @@ function openPostDetail(id) {
 
 
   currentPostImages =
-    Array.isArray(
-      post.images
-    )
-      ? post.images
-      : [];
+    post.images || [];
 
 
   currentImageIndex =
@@ -2765,8 +4125,7 @@ function openPostDetail(id) {
   document.getElementById(
     "detailCaption"
   ).textContent =
-    post.caption ||
-    "";
+    post.caption || "";
 
 
   updateDetailLikes(
@@ -2802,17 +4161,8 @@ function renderCarousel() {
     currentPostImages.length;
 
 
-  if (!total) {
-
-    document.getElementById(
-      "detailImage"
-    ).removeAttribute(
-      "src"
-    );
-
+  if (!total)
     return;
-
-  }
 
 
   document.getElementById(
@@ -2829,24 +4179,17 @@ function renderCarousel() {
     `${currentImageIndex + 1} / ${total}`;
 
 
-  const previous =
-    document.getElementById(
-      "carouselPrev"
-    );
-
-  const next =
-    document.getElementById(
-      "carouselNext"
-    );
-
-
-  previous.style.display =
+  document.getElementById(
+    "carouselPrev"
+  ).style.display =
     total > 1
       ? "block"
       : "none";
 
 
-  next.style.display =
+  document.getElementById(
+    "carouselNext"
+  ).style.display =
     total > 1
       ? "block"
       : "none";
@@ -2858,50 +4201,47 @@ function renderCarousel() {
     );
 
 
-  dots.innerHTML = "";
+  dots.innerHTML =
+    "";
 
 
-  if (total > 1) {
+  currentPostImages.forEach(
+    (_, index) => {
 
-    currentPostImages.forEach(
-      (_, index) => {
-
-        const dot =
-          document.createElement(
-            "div"
-          );
+      const dot =
+        document.createElement(
+          "div"
+        );
 
 
-        dot.className =
-          "carousel-dot";
+      dot.className =
+        "carousel-dot";
 
 
-        if (
-          index ===
-          currentImageIndex
-        ) {
+      if (
+        index ===
+        currentImageIndex
+      ) {
 
-          dot.classList.add(
-            "active"
-          );
-
-        }
-
-
-        dots.appendChild(
-          dot
+        dot.classList.add(
+          "active"
         );
 
       }
-    );
 
-  }
+
+      dots.appendChild(
+        dot
+      );
+
+    }
+  );
 
 }
 
 
 /* =================================================
-   NEXT / PREVIOUS
+   POST CAROUSEL
 ================================================= */
 
 document
@@ -2916,7 +4256,8 @@ document
 
 
       if (
-        currentPostImages.length <= 1
+        currentPostImages.length <=
+        1
       )
         return;
 
@@ -2946,7 +4287,8 @@ document
 
 
       if (
-        currentPostImages.length <= 1
+        currentPostImages.length <=
+        1
       )
         return;
 
@@ -2964,127 +4306,6 @@ document
 
     }
   );
-
-
-/* =================================================
-   KEYBOARD
-================================================= */
-
-document.addEventListener(
-  "keydown",
-  event => {
-
-    const modal =
-      document.getElementById(
-        "detailModal"
-      );
-
-
-    if (
-      !modal.classList.contains(
-        "show"
-      )
-    )
-      return;
-
-
-    if (
-      event.key ===
-      "ArrowRight"
-    ) {
-
-      document.getElementById(
-        "carouselNext"
-      ).click();
-
-    }
-
-
-    if (
-      event.key ===
-      "ArrowLeft"
-    ) {
-
-      document.getElementById(
-        "carouselPrev"
-      ).click();
-
-    }
-
-  }
-);
-
-
-/* =================================================
-   SWIPE
-================================================= */
-
-let touchStartX = 0;
-
-
-const postCarousel =
-  document.getElementById(
-    "postCarousel"
-  );
-
-
-postCarousel.addEventListener(
-  "touchstart",
-  event => {
-
-    touchStartX =
-      event.changedTouches[0]
-        .screenX;
-
-  },
-  {
-    passive: true
-  }
-);
-
-
-postCarousel.addEventListener(
-  "touchend",
-  event => {
-
-    const touchEndX =
-      event.changedTouches[0]
-        .screenX;
-
-
-    const difference =
-      touchStartX -
-      touchEndX;
-
-
-    if (
-      Math.abs(difference) <
-      40
-    )
-      return;
-
-
-    if (
-      difference > 0
-    ) {
-
-      document.getElementById(
-        "carouselNext"
-      ).click();
-
-    } else {
-
-      document.getElementById(
-        "carouselPrev"
-      ).click();
-
-    }
-
-  },
-  {
-    passive: true
-  }
-);
 
 
 /* =================================================
@@ -3123,13 +4344,9 @@ document
         (post.likes || 0) + 1;
 
 
-      const saved =
-        savePosts(
-          posts
-        );
-
-
-      if (!saved)
+      if (
+        !savePosts(posts)
+      )
         return;
 
 
@@ -3185,13 +4402,11 @@ document
         return;
 
 
-      const confirmed =
-        confirm(
+      if (
+        !confirm(
           "Delete this post?"
-        );
-
-
-      if (!confirmed)
+        )
+      )
         return;
 
 
@@ -3207,22 +4422,16 @@ document
         );
 
 
-      const saved =
-        savePosts(
+      if (
+        !savePosts(
           remaining
-        );
-
-
-      if (!saved)
+        )
+      )
         return;
 
 
       selectedPostId =
         null;
-
-
-      currentPostImages =
-        [];
 
 
       closeModal(
@@ -3367,19 +4576,25 @@ const themeToggle =
 
 function loadTheme() {
 
-  let saved =
+  let theme =
     localStorage.getItem(
       THEME_KEY
     );
 
 
-  /*
-     Migrate old theme.
-  */
+  if (!theme) {
 
-  if (!saved) {
+    theme =
+      localStorage.getItem(
+        "private_profile_theme_v4"
+      );
 
-    saved =
+  }
+
+
+  if (!theme) {
+
+    theme =
       localStorage.getItem(
         "private_profile_theme_v3"
       );
@@ -3388,7 +4603,7 @@ function loadTheme() {
 
 
   if (
-    saved === "dark"
+    theme === "dark"
   ) {
 
     document.body.classList.add(
@@ -3417,7 +4632,7 @@ themeToggle.addEventListener(
     );
 
 
-    const isDark =
+    const dark =
       document.body.classList.contains(
         "dark"
       );
@@ -3425,14 +4640,14 @@ themeToggle.addEventListener(
 
     localStorage.setItem(
       THEME_KEY,
-      isDark
+      dark
         ? "dark"
         : "light"
     );
 
 
     themeToggle.textContent =
-      isDark
+      dark
         ? "☀"
         : "☾";
 
@@ -3482,7 +4697,7 @@ function resizeImage(
 
           reject(
             new Error(
-              "Could not read file"
+              "Could not read image"
             )
           );
 
@@ -3602,7 +4817,9 @@ function resizeImage(
    HELPERS
 ================================================= */
 
-function getInitials(name) {
+function getInitials(
+  name
+) {
 
   if (!name)
     return "Y";
@@ -3638,7 +4855,9 @@ function getInitials(name) {
 }
 
 
-function escapeHTML(value) {
+function escapeHTML(
+  value
+) {
 
   return String(value)
     .replace(
@@ -3665,7 +4884,9 @@ function escapeHTML(value) {
 }
 
 
-function formatDate(date) {
+function formatDate(
+  date
+) {
 
   if (!date)
     return "";
@@ -3698,7 +4919,9 @@ function formatDate(date) {
 let toastTimer;
 
 
-function showToast(message) {
+function showToast(
+  message
+) {
 
   toast.textContent =
     message;
@@ -3730,7 +4953,7 @@ function showToast(message) {
 
 
 /* =================================================
-   START APP
+   START
 ================================================= */
 
 loadTheme();
@@ -3738,6 +4961,8 @@ loadTheme();
 getProfile();
 
 getPosts();
+
+cleanStories();
 
 render();
 
