@@ -2,783 +2,1097 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Private personal profile">
-  <title>My Profile</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg: #fafafa;
-      --card: #ffffff;
-      --text: #111111;
-      --muted: #737373;
-      --border: #dbdbdb;
-      --button: #0095f6;
-      --button-hover: #1877f2;
-      --danger: #ed4956;
-      --input: #f5f5f5;
-      --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    }
-
-    body.dark {
-      --bg: #000000;
-      --card: #121212;
-      --text: #f5f5f5;
-      --muted: #a8a8a8;
-      --border: #363636;
-      --input: #1c1c1c;
-      --shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
-        sans-serif;
-      min-height: 100vh;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    button,
-    input,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    /* ------------------------------
-       APP
-    ------------------------------ */
-
-    .app {
-      min-height: 100vh;
-    }
-
-    /* ------------------------------
-       TOP BAR
-    ------------------------------ */
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      height: 60px;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .topbar-inner {
-      max-width: 975px;
-      height: 100%;
-      margin: auto;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .brand {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.8px;
-    }
-
-    .brand span {
-      font-weight: 400;
-    }
-
-    .top-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .icon-btn {
-      width: 38px;
-      height: 38px;
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      border-radius: 50%;
-      font-size: 20px;
-    }
-
-    .icon-btn:hover {
-      background: var(--input);
-    }
-
-    /* ------------------------------
-       MAIN
-    ------------------------------ */
-
-    main {
-      max-width: 975px;
-      margin: auto;
-      padding: 30px 20px 80px;
-    }
-
-    /* ------------------------------
-       PROFILE HEADER
-    ------------------------------ */
-
-    .profile-header {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 55px;
-      padding: 25px 20px 45px;
-    }
-
-    .avatar-wrapper {
-      display: flex;
-      justify-content: center;
-    }
-
-    .avatar {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1px solid var(--border);
-      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
-      padding: 3px;
-    }
-
-    .avatar-placeholder {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
-      color: white;
-      font-size: 55px;
-      font-weight: 700;
-      border: 3px solid var(--card);
-      outline: 1px solid var(--border);
-    }
-
-    .profile-info {
-      min-width: 0;
-    }
-
-    .profile-top {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
-    .username {
-      font-size: 28px;
-      font-weight: 400;
-    }
-
-    .profile-buttons {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 8px;
-      padding: 8px 18px;
-      font-size: 14px;
-      font-weight: 600;
-      background: var(--input);
-      color: var(--text);
-    }
-
-    .btn:hover {
-      opacity: 0.85;
-    }
-
-    .btn-primary {
-      background: var(--button);
-      color: white;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-
-    .stats {
-      display: flex;
-      gap: 35px;
-      margin-bottom: 20px;
-    }
-
-    .stat {
-      font-size: 16px;
-    }
-
-    .stat strong {
-      font-weight: 700;
-    }
-
-    .bio-name {
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .bio {
-      white-space: pre-wrap;
-      line-height: 1.45;
-      max-width: 500px;
-      color: var(--text);
-    }
-
-    .private-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 12px;
-    }
-
-    /* ------------------------------
-       POSTS NAV
-    ------------------------------ */
-
-    .posts-nav {
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: center;
-      gap: 60px;
-    }
-
-    .posts-nav button {
-      height: 52px;
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      position: relative;
-    }
-
-    .posts-nav button.active {
-      color: var(--text);
-    }
-
-    .posts-nav button.active::before {
-      content: "";
-      position: absolute;
-      top: -1px;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: var(--text);
-    }
-
-    /* ------------------------------
-       POST GRID
-    ------------------------------ */
-
-    .post-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-    }
-
-    .post {
-      position: relative;
-      aspect-ratio: 1 / 1;
-      overflow: hidden;
-      background: var(--input);
-      cursor: pointer;
-    }
-
-    .post img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.25s;
-    }
-
-    .post:hover img {
-      transform: scale(1.03);
-    }
-
-    .post-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 25px;
-      color: white;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .post:hover .post-overlay {
-      opacity: 1;
-    }
-
-    .post-overlay span {
-      font-weight: 700;
-    }
-
-    .text-post {
-      width: 100%;
-      height: 100%;
-      padding: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background: linear-gradient(135deg, #833ab4, #fd1d1d);
-      color: white;
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    /* ------------------------------
-       EMPTY STATE
-    ------------------------------ */
-
-    .empty {
-      grid-column: 1 / -1;
-      padding: 80px 20px;
-      text-align: center;
-    }
-
-    .empty-icon {
-      width: 65px;
-      height: 65px;
-      margin: 0 auto 20px;
-      border: 2px solid var(--text);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-    }
-
-    .empty h2 {
-      margin-bottom: 8px;
-    }
-
-    .empty p {
-      color: var(--muted);
-      margin-bottom: 20px;
-    }
-
-    /* ------------------------------
-       MODAL
-    ------------------------------ */
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(0, 0, 0, 0.65);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-backdrop.show {
-      display: flex;
-    }
-
-    .modal {
-      width: min(500px, 100%);
-      max-height: 90vh;
-      overflow-y: auto;
-      background: var(--card);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-    }
-
-    .modal-header {
-      height: 55px;
-      padding: 0 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .modal-header h2 {
-      font-size: 16px;
-    }
-
-    .close-btn {
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      font-size: 25px;
-      line-height: 1;
-    }
-
-    .modal-body {
-      padding: 25px;
-    }
-
-    /* ------------------------------
-       FORMS
-    ------------------------------ */
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 7px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .form-control {
-      width: 100%;
-      border: 1px solid var(--border);
-      background: var(--input);
-      color: var(--text);
-      border-radius: 7px;
-      padding: 11px 12px;
-      outline: none;
-    }
-
-    .form-control:focus {
-      border-color: var(--muted);
-    }
-
-    textarea.form-control {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .file-label {
-      display: block;
-      border: 1px dashed var(--border);
-      border-radius: 10px;
-      padding: 25px;
-      text-align: center;
-      cursor: pointer;
-      color: var(--muted);
-    }
-
-    .file-label:hover {
-      background: var(--input);
-    }
-
-    .file-label input {
-      display: none;
-    }
-
-    .preview {
-      margin-top: 15px;
-      display: none;
-    }
-
-    .preview.show {
-      display: block;
-    }
-
-    .preview img {
-      width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      border-radius: 8px;
-      background: var(--input);
-    }
-
-    .modal-footer {
-      padding: 15px 25px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
-    /* ------------------------------
-       POST DETAIL
-    ------------------------------ */
-
-    .post-detail {
-      max-width: 850px;
-    }
-
-    .post-detail-content {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      min-height: 400px;
-    }
-
-    .post-detail-image {
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .post-detail-image img {
-      max-height: 600px;
-      width: 100%;
-      object-fit: contain;
-    }
-
-    .post-detail-info {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .post-detail-caption {
-      margin-top: 20px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-    }
-
-    .post-detail-date {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: auto;
-      padding-top: 20px;
-    }
-
-    /* ------------------------------
-       TOAST
-    ------------------------------ */
-
-    .toast {
-      position: fixed;
-      bottom: 25px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      z-index: 200;
-      background: #262626;
-      color: white;
-      padding: 12px 18px;
-      border-radius: 8px;
-      font-size: 14px;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.25s;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* ------------------------------
-       RESPONSIVE
-    ------------------------------ */
-
-    @media (max-width: 700px) {
-      main {
-        padding: 10px 0 60px;
-      }
-
-      .profile-header {
-        grid-template-columns: 90px 1fr;
-        gap: 20px;
-        padding: 20px 15px 30px;
-      }
-
-      .avatar,
-      .avatar-placeholder {
-        width: 80px;
-        height: 80px;
-        font-size: 30px;
-      }
-
-      .username {
-        font-size: 20px;
-      }
-
-      .profile-top {
-        gap: 10px;
-        margin-bottom: 12px;
-      }
-
-      .stats {
-        gap: 18px;
-        font-size: 14px;
-        margin-bottom: 12px;
-      }
-
-      .profile-buttons {
-        width: 100%;
-      }
-
-      .profile-buttons .btn {
-        flex: 1;
-      }
-
-      .posts-nav {
-        gap: 45px;
-      }
-
-      .post-grid {
-        gap: 2px;
-      }
-
-      .post-detail-content {
-        grid-template-columns: 1fr;
-      }
-
-      .post-detail-info {
-        min-height: 250px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Private personal profile">
+<title>My Profile</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #fafafa;
+  --card: #fff;
+  --text: #111;
+  --muted: #737373;
+  --border: #dbdbdb;
+  --button: #0095f6;
+  --button-hover: #1877f2;
+  --danger: #ed4956;
+  --input: #f5f5f5;
+  --overlay: rgba(0,0,0,.65);
+  --shadow: 0 8px 30px rgba(0,0,0,.15);
+}
+
+body.dark {
+  --bg: #000;
+  --card: #121212;
+  --text: #f5f5f5;
+  --muted: #a8a8a8;
+  --border: #363636;
+  --input: #1c1c1c;
+  --shadow: 0 8px 30px rgba(0,0,0,.5);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  transition: background .2s, color .2s;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+
+/* ================================
+   TOP BAR
+================================ */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 60px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-inner {
+  width: min(975px, 100%);
+  height: 100%;
+  margin: auto;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.8px;
+}
+
+.brand span {
+  font-weight: 400;
+}
+
+.top-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: transparent;
+  color: var(--text);
+
+  font-size: 21px;
+}
+
+.icon-btn:hover {
+  background: var(--input);
+}
+
+
+/* ================================
+   MAIN
+================================ */
+
+main {
+  width: min(975px, 100%);
+  margin: auto;
+  padding: 20px 20px 80px;
+}
+
+
+/* ================================
+   PROFILE
+================================ */
+
+.profile-header {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 55px;
+
+  padding: 25px 20px 45px;
+}
+
+.avatar-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+
+  border-radius: 50%;
+  object-fit: cover;
+
+  border: 3px solid var(--card);
+  outline: 1px solid var(--border);
+}
+
+.avatar-placeholder {
+  width: 150px;
+  height: 150px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #833ab4,
+      #fd1d1d,
+      #fcb045
+    );
+
+  color: white;
+  font-size: 48px;
+  font-weight: 700;
+
+  border: 3px solid var(--card);
+  outline: 1px solid var(--border);
+}
+
+.profile-info {
+  min-width: 0;
+}
+
+.profile-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+
+  margin-bottom: 20px;
+}
+
+.username {
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.profile-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 8px;
+
+  padding: 8px 18px;
+
+  background: var(--input);
+  color: var(--text);
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn:hover {
+  opacity: .85;
+}
+
+.btn-primary {
+  background: var(--button);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.stats {
+  display: flex;
+  gap: 30px;
+
+  margin-bottom: 20px;
+
+  font-size: 16px;
+}
+
+.stat strong {
+  font-weight: 700;
+}
+
+.bio-name {
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.bio {
+  max-width: 500px;
+  white-space: pre-wrap;
+  line-height: 1.45;
+}
+
+.private-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  margin-top: 12px;
+
+  color: var(--muted);
+  font-size: 12px;
+}
+
+
+/* ================================
+   POSTS NAV
+================================ */
+
+.posts-nav {
+  display: flex;
+  justify-content: center;
+  gap: 70px;
+
+  border-top: 1px solid var(--border);
+}
+
+.posts-nav button {
+  position: relative;
+
+  height: 52px;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--muted);
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+
+.posts-nav button.active {
+  color: var(--text);
+}
+
+.posts-nav button.active::before {
+  content: "";
+
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+
+  height: 1px;
+  background: var(--text);
+}
+
+
+/* ================================
+   POST GRID
+================================ */
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.post {
+  position: relative;
+
+  aspect-ratio: 1 / 1;
+
+  overflow: hidden;
+
+  background: var(--input);
+
+  cursor: pointer;
+}
+
+.post img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition: transform .25s;
+}
+
+.post:hover img {
+  transform: scale(1.03);
+}
+
+.post-multiple {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  z-index: 2;
+
+  color: white;
+
+  font-size: 19px;
+
+  text-shadow:
+    0 1px 4px rgba(0,0,0,.8);
+}
+
+.post-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+
+  background: rgba(0,0,0,.5);
+
+  color: white;
+
+  opacity: 0;
+
+  transition: opacity .2s;
+}
+
+.post:hover .post-overlay {
+  opacity: 1;
+}
+
+.text-post {
+  width: 100%;
+  height: 100%;
+
+  padding: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #833ab4,
+      #fd1d1d
+    );
+
+  color: white;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+
+/* ================================
+   EMPTY
+================================ */
+
+.empty {
+  grid-column: 1 / -1;
+
+  padding: 80px 20px;
+
+  text-align: center;
+}
+
+.empty-icon {
+  width: 65px;
+  height: 65px;
+
+  margin: 0 auto 20px;
+
+  border: 2px solid var(--text);
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 30px;
+}
+
+.empty h2 {
+  margin-bottom: 8px;
+}
+
+.empty p {
+  margin-bottom: 20px;
+  color: var(--muted);
+}
+
+
+/* ================================
+   MODALS
+================================ */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 100;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: var(--overlay);
+}
+
+.modal-backdrop.show {
+  display: flex;
+}
+
+.modal {
+  width: min(520px, 100%);
+  max-height: 92vh;
+
+  overflow-y: auto;
+
+  background: var(--card);
+
+  border-radius: 12px;
+
+  box-shadow: var(--shadow);
+}
+
+.modal-header {
+  height: 55px;
+
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+  font-size: 16px;
+}
+
+.close-btn {
+  border: 0;
+  background: transparent;
+
+  color: var(--text);
+
+  font-size: 27px;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-footer {
+  padding: 15px 25px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  border-top: 1px solid var(--border);
+}
+
+
+/* ================================
+   FORMS
+================================ */
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label:not(.file-label) {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-control {
+  width: 100%;
+
+  padding: 11px 12px;
+
+  border: 1px solid var(--border);
+  border-radius: 7px;
+
+  outline: none;
+
+  background: var(--input);
+  color: var(--text);
+}
+
+.form-control:focus {
+  border-color: var(--muted);
+}
+
+textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.file-label {
+  display: block;
+
+  padding: 25px;
+
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+
+  text-align: center;
+
+  color: var(--muted);
+
+  cursor: pointer;
+}
+
+.file-label:hover {
+  background: var(--input);
+}
+
+.file-label input {
+  display: none;
+}
+
+
+/* ================================
+   IMAGE PREVIEW
+================================ */
+
+.preview {
+  display: none;
+
+  margin-top: 15px;
+}
+
+.preview.show {
+  display: block;
+}
+
+.preview img {
+  width: 100%;
+  max-height: 300px;
+
+  object-fit: contain;
+
+  border-radius: 8px;
+
+  background: var(--input);
+}
+
+.multi-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+
+  margin-top: 15px;
+}
+
+.multi-preview img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+
+  border-radius: 6px;
+}
+
+
+/* ================================
+   POST DETAIL
+================================ */
+
+.post-detail {
+  width: min(900px, 100%);
+}
+
+.post-detail-content {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+
+  min-height: 450px;
+}
+
+.post-carousel {
+  position: relative;
+
+  min-height: 450px;
+
+  background: #000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+
+  max-height: 650px;
+
+  object-fit: contain;
+}
+
+.carousel-arrow {
+  position: absolute;
+
+  top: 50%;
+
+  width: 36px;
+  height: 36px;
+
+  transform: translateY(-50%);
+
+  border: 0;
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.85);
+  color: #111;
+
+  font-size: 22px;
+
+  z-index: 5;
+}
+
+.carousel-arrow:hover {
+  background: white;
+}
+
+.carousel-prev {
+  left: 12px;
+}
+
+.carousel-next {
+  right: 12px;
+}
+
+.carousel-counter {
+  position: absolute;
+
+  top: 12px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  padding: 5px 10px;
+
+  border-radius: 20px;
+
+  background: rgba(0,0,0,.65);
+
+  color: white;
+
+  font-size: 12px;
+
+  z-index: 5;
+}
+
+.carousel-dots {
+  position: absolute;
+
+  bottom: 12px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  display: flex;
+  gap: 5px;
+
+  z-index: 5;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.5);
+}
+
+.carousel-dot.active {
+  background: white;
+}
+
+.post-detail-info {
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.post-detail-caption {
+  margin-top: 20px;
+
+  line-height: 1.5;
+
+  white-space: pre-wrap;
+}
+
+.post-detail-likes {
+  margin-top: 15px;
+
+  font-weight: 600;
+}
+
+.post-detail-date {
+  margin-top: auto;
+  padding-top: 20px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+
+/* ================================
+   TOAST
+================================ */
+
+.toast {
+  position: fixed;
+
+  bottom: 25px;
+  left: 50%;
+
+  z-index: 200;
+
+  transform:
+    translateX(-50%)
+    translateY(20px);
+
+  padding: 12px 18px;
+
+  border-radius: 8px;
+
+  background: #262626;
+  color: white;
+
+  font-size: 14px;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: .25s;
+}
+
+.toast.show {
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 700px) {
+
+  main {
+    padding: 5px 0 60px;
+  }
+
+  .profile-header {
+    grid-template-columns: 90px 1fr;
+
+    gap: 20px;
+
+    padding: 20px 15px 30px;
+  }
+
+  .avatar,
+  .avatar-placeholder {
+    width: 80px;
+    height: 80px;
+
+    font-size: 28px;
+  }
+
+  .username {
+    font-size: 20px;
+  }
+
+  .profile-top {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .profile-buttons {
+    width: 100%;
+  }
+
+  .profile-buttons .btn {
+    flex: 1;
+  }
+
+  .stats {
+    gap: 16px;
+
+    font-size: 14px;
+
+    margin-bottom: 12px;
+  }
+
+  .posts-nav {
+    gap: 45px;
+  }
+
+  .post-grid {
+    gap: 2px;
+  }
+
+  .post-detail-content {
+    grid-template-columns: 1fr;
+  }
+
+  .post-carousel {
+    min-height: 350px;
+  }
+
+  .post-detail-info {
+    min-height: 250px;
+  }
+}
+</style>
 </head>
+
 
 <body>
 
-<div class="app">
+<!-- ==========================================
+     TOP BAR
+========================================== -->
 
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        My<span>Profile</span>
-      </div>
+<header class="topbar">
 
-      <div class="top-actions">
-        <button
-          class="icon-btn"
-          id="addPostTop"
-          title="Create post"
-          aria-label="Create post"
-        >＋</button>
+  <div class="topbar-inner">
 
-        <button
-          class="icon-btn"
-          id="themeToggle"
-          title="Toggle theme"
-          aria-label="Toggle theme"
-        >☾</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- MAIN PROFILE -->
-  <main>
-
-    <section class="profile-header">
-
-      <div class="avatar-wrapper" id="avatarContainer">
-        <!-- Avatar inserted by JavaScript -->
-      </div>
-
-      <div class="profile-info">
-
-        <div class="profile-top">
-          <h1 class="username" id="usernameDisplay">
-            username
-          </h1>
-
-          <div class="profile-buttons">
-            <button class="btn" id="editProfileBtn">
-              Edit profile
-            </button>
-
-            <button class="btn btn-primary" id="addPostBtn">
-              Add post
-            </button>
-          </div>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <strong id="postCount">0</strong> posts
-          </div>
-
-          <div class="stat">
-            <strong id="likesCount">0</strong> likes
-          </div>
-        </div>
-
-        <div class="bio-name" id="nameDisplay">
-          Your Name
-        </div>
-
-        <div class="bio" id="bioDisplay">
-          Add a bio to your profile.
-        </div>
-
-        <div class="private-label">
-          🔒 Private — stored only on this browser
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- POSTS NAV -->
-    <div class="posts-nav">
-      <button class="active">
-        ▦ POSTS
-      </button>
-
-      <button id="aboutTab">
-        👤 PROFILE
-      </button>
+    <div class="brand">
+      My<span>Profile</span>
     </div>
 
-    <!-- POSTS -->
-    <section class="post-grid" id="postGrid">
-      <!-- Posts inserted by JavaScript -->
-    </section>
+    <div class="top-actions">
 
-  </main>
-</div>
+      <button
+        class="icon-btn"
+        id="addPostTop"
+        title="Create post"
+      >＋</button>
+
+      <button
+        class="icon-btn"
+        id="themeToggle"
+        title="Toggle theme"
+      >☾</button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- ==========================================
+     MAIN
+========================================== -->
+
+<main>
+
+  <!-- PROFILE HEADER -->
+
+  <section class="profile-header">
+
+    <div
+      class="avatar-wrapper"
+      id="avatarContainer"
+    ></div>
+
+
+    <div class="profile-info">
+
+      <div class="profile-top">
+
+        <h1
+          class="username"
+          id="usernameDisplay"
+        >
+          username
+        </h1>
+
+
+        <div class="profile-buttons">
+
+          <button
+            class="btn"
+            id="editProfileBtn"
+          >
+            Edit profile
+          </button>
+
+          <button
+            class="btn btn-primary"
+            id="addPostBtn"
+          >
+            Add post
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="stats">
+
+        <div class="stat">
+          <strong id="postCount">0</strong>
+          posts
+        </div>
+
+        <div class="stat">
+          <strong id="followersCount">17,000</strong>
+          followers
+        </div>
+
+        <div class="stat">
+          <strong id="followingCount">851</strong>
+          following
+        </div>
+
+      </div>
+
+
+      <div
+        class="bio-name"
+        id="nameDisplay"
+      >
+        Your Name
+      </div>
+
+
+      <div
+        class="bio"
+        id="bioDisplay"
+      >
+        Welcome to my private profile. ✨
+      </div>
+
+
+      <div class="private-label">
+        🔒 Private — saved only on this browser
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- POSTS NAV -->
+
+  <div class="posts-nav">
+
+    <button class="active">
+      ▦ POSTS
+    </button>
+
+    <button>
+      👤 PROFILE
+    </button>
+
+  </div>
+
+
+  <!-- POST GRID -->
+
+  <section
+    class="post-grid"
+    id="postGrid"
+  ></section>
+
+</main>
+
 
 
 <!-- ==========================================
      EDIT PROFILE MODAL
 ========================================== -->
 
-<div class="modal-backdrop" id="profileModal">
+<div
+  class="modal-backdrop"
+  id="profileModal"
+>
 
   <div class="modal">
 
     <div class="modal-header">
+
       <h2>Edit profile</h2>
 
       <button
         class="close-btn"
         data-close="profileModal"
       >×</button>
+
     </div>
+
 
     <form id="profileForm">
 
       <div class="modal-body">
 
         <div class="form-group">
+
           <label for="profileName">
             Name
           </label>
@@ -789,9 +1103,12 @@
             maxlength="50"
             placeholder="Your name"
           >
+
         </div>
 
+
         <div class="form-group">
+
           <label for="profileUsername">
             Username
           </label>
@@ -802,9 +1119,12 @@
             maxlength="30"
             placeholder="username"
           >
+
         </div>
 
+
         <div class="form-group">
+
           <label for="profileBio">
             Bio
           </label>
@@ -816,33 +1136,51 @@
             placeholder="Tell people about yourself..."
           ></textarea>
 
-          <small style="color: var(--muted);">
+          <small style="color:var(--muted)">
             Maximum 150 characters
           </small>
+
         </div>
 
+
         <div class="form-group">
+
           <label>
             Profile picture
           </label>
 
           <label class="file-label">
-            📷 Choose a profile picture
+
+            📷 Choose profile picture
+
             <input
               type="file"
               id="profileImage"
               accept="image/*"
             >
+
           </label>
 
-          <div class="preview" id="profilePreview">
-            <img id="profilePreviewImage" alt="Profile preview">
+
+          <div
+            class="preview"
+            id="profilePreview"
+          >
+
+            <img
+              id="profilePreviewImage"
+              alt="Profile preview"
+            >
+
           </div>
+
         </div>
 
       </div>
 
+
       <div class="modal-footer">
+
         <button
           type="button"
           class="btn"
@@ -857,30 +1195,39 @@
         >
           Save changes
         </button>
+
       </div>
 
     </form>
 
   </div>
+
 </div>
 
 
+
 <!-- ==========================================
-     ADD POST MODAL
+     CREATE POST MODAL
 ========================================== -->
 
-<div class="modal-backdrop" id="postModal">
+<div
+  class="modal-backdrop"
+  id="postModal"
+>
 
   <div class="modal">
 
     <div class="modal-header">
+
       <h2>Create new post</h2>
 
       <button
         class="close-btn"
         data-close="postModal"
       >×</button>
+
     </div>
+
 
     <form id="postForm">
 
@@ -889,20 +1236,27 @@
         <div class="form-group">
 
           <label class="file-label">
-            🖼️ Choose an image
+
+            🖼️ Choose one or more pictures
+
             <input
               type="file"
               id="postImage"
               accept="image/*"
+              multiple
               required
             >
+
           </label>
 
-          <div class="preview" id="postPreview">
-            <img id="postPreviewImage" alt="Post preview">
-          </div>
+
+          <div
+            class="multi-preview"
+            id="postPreview"
+          ></div>
 
         </div>
+
 
         <div class="form-group">
 
@@ -920,6 +1274,7 @@
         </div>
 
       </div>
+
 
       <div class="modal-footer">
 
@@ -943,14 +1298,19 @@
     </form>
 
   </div>
+
 </div>
+
 
 
 <!-- ==========================================
      POST DETAIL MODAL
 ========================================== -->
 
-<div class="modal-backdrop" id="detailModal">
+<div
+  class="modal-backdrop"
+  id="detailModal"
+>
 
   <div class="modal post-detail">
 
@@ -965,29 +1325,89 @@
 
     </div>
 
+
     <div class="post-detail-content">
 
-      <div class="post-detail-image">
-        <img id="detailImage" alt="Post">
+      <div
+        class="post-carousel"
+        id="postCarousel"
+      >
+
+        <button
+          class="carousel-arrow carousel-prev"
+          id="carouselPrev"
+        >
+          ‹
+        </button>
+
+        <img
+          class="carousel-image"
+          id="detailImage"
+          alt="Post image"
+        >
+
+        <button
+          class="carousel-arrow carousel-next"
+          id="carouselNext"
+        >
+          ›
+        </button>
+
+        <div
+          class="carousel-counter"
+          id="carouselCounter"
+        >
+          1 / 1
+        </div>
+
+        <div
+          class="carousel-dots"
+          id="carouselDots"
+        ></div>
+
       </div>
+
 
       <div class="post-detail-info">
 
         <strong id="detailUsername">
-          username
+          @username
         </strong>
+
 
         <div
           class="post-detail-caption"
           id="detailCaption"
         ></div>
 
-        <div class="post-detail-date" id="detailDate"></div>
+
+        <div
+          class="post-detail-likes"
+          id="detailLikes"
+        >
+          ♥ 0 likes
+        </div>
+
+
+        <button
+          class="btn"
+          id="likePostBtn"
+          style="margin-top:15px"
+        >
+          ♥ Like
+        </button>
+
+
+        <div
+          class="post-detail-date"
+          id="detailDate"
+        ></div>
+
 
         <button
           class="btn btn-danger"
           id="deletePostBtn"
-          style="margin-top: 15px;"
+          style="margin-top:15px"
         >
           Delete post
         </button>
@@ -997,120 +1417,204 @@
     </div>
 
   </div>
+
 </div>
 
 
+
 <!-- TOAST -->
-<div class="toast" id="toast"></div>
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
 
 
 <script>
+
 /* ==================================================
-   PRIVATE PROFILE APP
+   PRIVATE PROFILE APPLICATION
 
-   Everything is stored in localStorage.
+   Everything is stored locally in the browser.
 
-   Nothing is uploaded to a server.
+   No server.
+   No database.
+   No public profile.
 ================================================== */
 
 
-/* ------------------------------------------
-   DEFAULT DATA
------------------------------------------- */
+/* ================================================
+   STORAGE KEYS
+================================================ */
+
+const PROFILE_KEY =
+  "private_profile_data_v3";
+
+const POSTS_KEY =
+  "private_profile_posts_v3";
+
+const THEME_KEY =
+  "private_profile_theme_v3";
+
+
+/* ================================================
+   DEFAULT PROFILE
+================================================ */
 
 const defaultProfile = {
+
   name: "Your Name",
+
   username: "username",
+
   bio: "Welcome to my private profile. ✨",
-  avatar: null
+
+  avatar: null,
+
+  followers: 17000,
+
+  following: 851
+
 };
 
 
-/* ------------------------------------------
-   STORAGE
------------------------------------------- */
-
-const PROFILE_KEY = "private_profile_data";
-const POSTS_KEY = "private_profile_posts";
-const THEME_KEY = "private_profile_theme";
-
+/* ================================================
+   PROFILE STORAGE
+================================================ */
 
 function getProfile() {
-  try {
-    const saved = localStorage.getItem(PROFILE_KEY);
 
-    return saved
-      ? { ...defaultProfile, ...JSON.parse(saved) }
-      : { ...defaultProfile };
+  try {
+
+    const saved =
+      localStorage.getItem(PROFILE_KEY);
+
+    if (!saved) {
+
+      saveProfile(defaultProfile);
+
+      return {
+        ...defaultProfile
+      };
+
+    }
+
+    return {
+      ...defaultProfile,
+      ...JSON.parse(saved)
+    };
+
   } catch {
-    return { ...defaultProfile };
+
+    return {
+      ...defaultProfile
+    };
+
   }
+
 }
 
 
 function saveProfile(profile) {
+
   localStorage.setItem(
     PROFILE_KEY,
     JSON.stringify(profile)
   );
+
 }
 
 
+/* ================================================
+   POST STORAGE
+================================================ */
+
 function getPosts() {
+
   try {
+
     return JSON.parse(
       localStorage.getItem(POSTS_KEY)
     ) || [];
+
   } catch {
+
     return [];
+
   }
+
 }
 
 
 function savePosts(posts) {
+
   localStorage.setItem(
     POSTS_KEY,
     JSON.stringify(posts)
   );
+
 }
 
 
-/* ------------------------------------------
+/* ================================================
    ELEMENTS
------------------------------------------- */
+================================================ */
 
 const avatarContainer =
-  document.getElementById("avatarContainer");
+  document.getElementById(
+    "avatarContainer"
+  );
 
 const usernameDisplay =
-  document.getElementById("usernameDisplay");
+  document.getElementById(
+    "usernameDisplay"
+  );
 
 const nameDisplay =
-  document.getElementById("nameDisplay");
+  document.getElementById(
+    "nameDisplay"
+  );
 
 const bioDisplay =
-  document.getElementById("bioDisplay");
+  document.getElementById(
+    "bioDisplay"
+  );
 
 const postCount =
-  document.getElementById("postCount");
+  document.getElementById(
+    "postCount"
+  );
 
-const likesCount =
-  document.getElementById("likesCount");
+const followersCount =
+  document.getElementById(
+    "followersCount"
+  );
+
+const followingCount =
+  document.getElementById(
+    "followingCount"
+  );
 
 const postGrid =
-  document.getElementById("postGrid");
+  document.getElementById(
+    "postGrid"
+  );
 
 const toast =
-  document.getElementById("toast");
+  document.getElementById(
+    "toast"
+  );
 
 
-/* ------------------------------------------
+/* ================================================
    RENDER PROFILE
------------------------------------------- */
+================================================ */
 
 function renderProfile() {
 
-  const profile = getProfile();
+  const profile =
+    getProfile();
 
   usernameDisplay.textContent =
     profile.username || "username";
@@ -1121,453 +1625,1064 @@ function renderProfile() {
   bioDisplay.textContent =
     profile.bio || "Add a bio to your profile.";
 
+  followersCount.textContent =
+    Number(profile.followers || 17000)
+      .toLocaleString();
+
+  followingCount.textContent =
+    Number(profile.following || 851)
+      .toLocaleString();
+
+
   if (profile.avatar) {
 
     avatarContainer.innerHTML = `
+
       <img
         class="avatar"
         src="${profile.avatar}"
         alt="Profile picture"
       >
+
     `;
 
   } else {
 
-    const initials =
-      getInitials(profile.name);
-
     avatarContainer.innerHTML = `
+
       <div class="avatar-placeholder">
-        ${escapeHTML(initials)}
+        ${escapeHTML(
+          getInitials(profile.name)
+        )}
       </div>
+
     `;
+
   }
 
-  const posts = getPosts();
 
-  postCount.textContent = posts.length;
+  const posts =
+    getPosts();
 
-  const totalLikes = posts.reduce(
-    (total, post) => total + (post.likes || 0),
-    0
-  );
+  postCount.textContent =
+    posts.length;
 
-  likesCount.textContent = totalLikes;
 }
 
 
-/* ------------------------------------------
+/* ================================================
    RENDER POSTS
------------------------------------------- */
+================================================ */
 
 function renderPosts() {
 
-  const posts = getPosts();
+  const posts =
+    getPosts();
 
   postGrid.innerHTML = "";
 
-  if (posts.length === 0) {
+
+  if (!posts.length) {
 
     postGrid.innerHTML = `
+
       <div class="empty">
 
         <div class="empty-icon">
           📷
         </div>
 
-        <h2>Share your first photo</h2>
+        <h2>
+          Share your first photo
+        </h2>
 
         <p>
-          When you add posts, they'll appear here.
+          When you add posts,
+          they'll appear here.
         </p>
 
         <button
           class="btn btn-primary"
-          onclick="openModal('postModal')"
+          onclick="openPostModal()"
         >
           Add your first post
         </button>
 
       </div>
+
     `;
 
     return;
+
   }
+
 
   posts.forEach(post => {
 
     const element =
       document.createElement("article");
 
-    element.className = "post";
+    element.className =
+      "post";
+
+
+    const images =
+      Array.isArray(post.images)
+        ? post.images
+        : [post.image];
+
+
+    const firstImage =
+      images[0];
+
 
     element.innerHTML = `
+
       ${
-        post.image
+        firstImage
+
           ? `
+
             <img
-              src="${post.image}"
-              alt="${escapeHTML(post.caption || "Post")}"
+              src="${firstImage}"
+              alt="${escapeHTML(
+                post.caption || "Post"
+              )}"
               loading="lazy"
             >
+
           `
+
           : `
+
             <div class="text-post">
-              ${escapeHTML(post.caption || "")}
+              ${escapeHTML(
+                post.caption || ""
+              )}
             </div>
+
           `
       }
 
+
+      ${
+        images.length > 1
+
+          ? `
+
+            <div class="post-multiple">
+              ▧
+            </div>
+
+          `
+
+          : ""
+      }
+
+
       <div class="post-overlay">
-        <span>♥ ${post.likes || 0}</span>
-        <span>💬</span>
+
+        <span>
+          ♥ ${post.likes || 0}
+        </span>
+
+        <span>
+          ${
+            images.length > 1
+              ? `📷 ${images.length}`
+              : "📷"
+          }
+        </span>
+
       </div>
+
     `;
 
-    element.addEventListener("click", () => {
-      openPostDetail(post.id);
-    });
+
+    element.addEventListener(
+      "click",
+      () => openPostDetail(post.id)
+    );
+
 
     postGrid.appendChild(element);
+
   });
+
 }
 
 
-/* ------------------------------------------
-   INITIAL RENDER
------------------------------------------- */
-
-function render() {
-  renderProfile();
-  renderPosts();
-}
-
-
-/* ------------------------------------------
+/* ================================================
    PROFILE EDITING
------------------------------------------- */
+================================================ */
 
-const editProfileBtn =
-  document.getElementById("editProfileBtn");
+document
+  .getElementById("editProfileBtn")
+  .addEventListener("click", () => {
 
+    const profile =
+      getProfile();
 
-editProfileBtn.addEventListener("click", () => {
-
-  const profile = getProfile();
-
-  document.getElementById("profileName").value =
-    profile.name || "";
-
-  document.getElementById("profileUsername").value =
-    profile.username || "";
-
-  document.getElementById("profileBio").value =
-    profile.bio || "";
-
-  if (profile.avatar) {
 
     document.getElementById(
-      "profilePreviewImage"
-    ).src = profile.avatar;
+      "profileName"
+    ).value =
+      profile.name || "";
+
 
     document.getElementById(
-      "profilePreview"
-    ).classList.add("show");
+      "profileUsername"
+    ).value =
+      profile.username || "";
 
-  } else {
 
     document.getElementById(
-      "profilePreview"
-    ).classList.remove("show");
-  }
-
-  openModal("profileModal");
-});
+      "profileBio"
+    ).value =
+      profile.bio || "";
 
 
-/* ------------------------------------------
+    newAvatar = null;
+
+
+    if (profile.avatar) {
+
+      document.getElementById(
+        "profilePreviewImage"
+      ).src =
+        profile.avatar;
+
+      document.getElementById(
+        "profilePreview"
+      ).classList.add("show");
+
+    } else {
+
+      document.getElementById(
+        "profilePreview"
+      ).classList.remove("show");
+
+    }
+
+
+    openModal("profileModal");
+
+  });
+
+
+/* ================================================
    PROFILE IMAGE
------------------------------------------- */
+================================================ */
 
 let newAvatar = null;
 
 
 document
   .getElementById("profileImage")
-  .addEventListener("change", function () {
+  .addEventListener(
+    "change",
+    function() {
 
-    const file = this.files[0];
+      const file =
+        this.files[0];
 
-    if (!file) return;
-
-    resizeImage(file, 600, function(dataURL) {
-
-      newAvatar = dataURL;
-
-      document.getElementById(
-        "profilePreviewImage"
-      ).src = dataURL;
-
-      document.getElementById(
-        "profilePreview"
-      ).classList.add("show");
-
-    });
-  });
+      if (!file) return;
 
 
-/* ------------------------------------------
+      resizeImage(
+        file,
+        600,
+        dataURL => {
+
+          newAvatar =
+            dataURL;
+
+
+          document.getElementById(
+            "profilePreviewImage"
+          ).src =
+            dataURL;
+
+
+          document.getElementById(
+            "profilePreview"
+          ).classList.add(
+            "show"
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+/* ================================================
    SAVE PROFILE
------------------------------------------- */
+================================================ */
 
 document
   .getElementById("profileForm")
-  .addEventListener("submit", function(event) {
+  .addEventListener(
+    "submit",
+    event => {
 
-    event.preventDefault();
+      event.preventDefault();
 
-    const profile = getProfile();
 
-    profile.name =
-      document
-        .getElementById("profileName")
-        .value
-        .trim() || "Your Name";
+      const profile =
+        getProfile();
 
-    profile.username =
-      document
-        .getElementById("profileUsername")
-        .value
+
+      profile.name =
+        document.getElementById(
+          "profileName"
+        ).value.trim()
+        || "Your Name";
+
+
+      profile.username =
+        document.getElementById(
+          "profileUsername"
+        ).value
         .trim()
         .replace(/\s+/g, "")
         .replace(/^@/, "")
-        .toLowerCase() || "username";
+        .toLowerCase()
+        || "username";
 
-    profile.bio =
-      document
-        .getElementById("profileBio")
-        .value
-        .trim();
 
-    if (newAvatar !== null) {
-      profile.avatar = newAvatar;
+      profile.bio =
+        document.getElementById(
+          "profileBio"
+        ).value.trim();
+
+
+      if (newAvatar !== null) {
+
+        profile.avatar =
+          newAvatar;
+
+      }
+
+
+      saveProfile(profile);
+
+
+      newAvatar = null;
+
+
+      closeModal(
+        "profileModal"
+      );
+
+
+      render();
+
+
+      showToast(
+        "Profile saved!"
+      );
+
     }
-
-    saveProfile(profile);
-
-    newAvatar = null;
-
-    closeModal("profileModal");
-
-    render();
-
-    showToast("Profile updated!");
-  });
+  );
 
 
-/* ------------------------------------------
-   ADD POST
------------------------------------------- */
+/* ================================================
+   CREATE POST
+================================================ */
 
-const addPostBtn =
-  document.getElementById("addPostBtn");
-
-const addPostTop =
-  document.getElementById("addPostTop");
+let selectedPostImages = [];
 
 
-addPostBtn.addEventListener(
-  "click",
-  () => openPostModal()
-);
+document
+  .getElementById("addPostBtn")
+  .addEventListener(
+    "click",
+    openPostModal
+  );
 
-addPostTop.addEventListener(
-  "click",
-  () => openPostModal()
-);
+
+document
+  .getElementById("addPostTop")
+  .addEventListener(
+    "click",
+    openPostModal
+  );
 
 
 function openPostModal() {
+
+  selectedPostImages = [];
+
 
   document
     .getElementById("postForm")
     .reset();
 
-  document
-    .getElementById("postPreview")
-    .classList.remove("show");
+
+  document.getElementById(
+    "postPreview"
+  ).innerHTML = "";
+
 
   openModal("postModal");
+
 }
 
 
-/* ------------------------------------------
-   POST IMAGE PREVIEW
------------------------------------------- */
-
-let newPostImage = null;
-
+/* ================================================
+   MULTIPLE POST IMAGE SELECTION
+================================================ */
 
 document
   .getElementById("postImage")
-  .addEventListener("change", function() {
+  .addEventListener(
+    "change",
+    function() {
 
-    const file = this.files[0];
-
-    if (!file) return;
-
-    resizeImage(file, 1400, function(dataURL) {
-
-      newPostImage = dataURL;
-
-      document.getElementById(
-        "postPreviewImage"
-      ).src = dataURL;
-
-      document.getElementById(
-        "postPreview"
-      ).classList.add("show");
-
-    });
-  });
+      const files =
+        Array.from(this.files);
 
 
-/* ------------------------------------------
+      if (!files.length) return;
+
+
+      selectedPostImages = [];
+
+
+      let loaded =
+        0;
+
+
+      files.forEach(file => {
+
+        resizeImage(
+          file,
+          1400,
+          dataURL => {
+
+            selectedPostImages.push(
+              dataURL
+            );
+
+
+            loaded++;
+
+
+            if (
+              loaded === files.length
+            ) {
+
+              renderPostPreview();
+
+            }
+
+          }
+        );
+
+      });
+
+    }
+  );
+
+
+/* ================================================
+   PREVIEW MULTIPLE IMAGES
+================================================ */
+
+function renderPostPreview() {
+
+  const preview =
+    document.getElementById(
+      "postPreview"
+    );
+
+
+  preview.innerHTML = "";
+
+
+  selectedPostImages.forEach(
+    (image, index) => {
+
+      const img =
+        document.createElement("img");
+
+      img.src =
+        image;
+
+      img.alt =
+        `Selected image ${index + 1}`;
+
+      preview.appendChild(img);
+
+    }
+  );
+
+}
+
+
+/* ================================================
    CREATE POST
------------------------------------------- */
+================================================ */
 
 document
   .getElementById("postForm")
-  .addEventListener("submit", function(event) {
+  .addEventListener(
+    "submit",
+    event => {
 
-    event.preventDefault();
+      event.preventDefault();
 
-    if (!newPostImage) {
 
-      showToast("Please choose an image.");
+      if (
+        selectedPostImages.length === 0
+      ) {
 
-      return;
-    }
+        showToast(
+          "Choose at least one picture."
+        );
 
-    const caption =
-      document
-        .getElementById("postCaption")
-        .value
-        .trim();
+        return;
 
-    const posts = getPosts();
+      }
 
-    const newPost = {
-      id: Date.now().toString(),
-      image: newPostImage,
-      caption: caption,
-      likes: 0,
-      createdAt: new Date().toISOString()
-    };
 
-    posts.unshift(newPost);
+      const caption =
+        document.getElementById(
+          "postCaption"
+        ).value.trim();
 
-    try {
 
-      savePosts(posts);
+      const posts =
+        getPosts();
 
-    } catch (error) {
 
-      showToast(
-        "The image is too large for browser storage."
+      const newPost = {
+
+        id:
+          Date.now().toString(),
+
+        images:
+          selectedPostImages,
+
+        caption:
+          caption,
+
+        likes:
+          0,
+
+        createdAt:
+          new Date().toISOString()
+
+      };
+
+
+      posts.unshift(
+        newPost
       );
 
-      return;
+
+      try {
+
+        savePosts(posts);
+
+      } catch {
+
+        showToast(
+          "Not enough browser storage. Try fewer or smaller pictures."
+        );
+
+        return;
+
+      }
+
+
+      selectedPostImages = [];
+
+
+      closeModal(
+        "postModal"
+      );
+
+
+      render();
+
+
+      showToast(
+        "Post added!"
+      );
+
     }
-
-    newPostImage = null;
-
-    closeModal("postModal");
-
-    render();
-
-    showToast("Post added!");
-  });
+  );
 
 
-/* ------------------------------------------
-   POST DETAIL
------------------------------------------- */
+/* ================================================
+   POST DETAIL STATE
+================================================ */
 
 let selectedPostId = null;
 
+let currentPostImages = [];
+
+let currentImageIndex = 0;
+
+
+/* ================================================
+   OPEN POST
+================================================ */
 
 function openPostDetail(id) {
 
-  const posts = getPosts();
+  const posts =
+    getPosts();
+
 
   const post =
-    posts.find(p => p.id === id);
+    posts.find(
+      p => p.id === id
+    );
+
 
   if (!post) return;
 
-  selectedPostId = id;
 
-  document.getElementById(
-    "detailImage"
-  ).src = post.image;
+  selectedPostId =
+    id;
 
-  document.getElementById(
-    "detailCaption"
-  ).textContent =
-    post.caption || "";
+
+  currentPostImages =
+    Array.isArray(post.images)
+      ? post.images
+      : [post.image];
+
+
+  currentImageIndex =
+    0;
+
 
   document.getElementById(
     "detailUsername"
   ).textContent =
     "@" + getProfile().username;
 
+
+  document.getElementById(
+    "detailCaption"
+  ).textContent =
+    post.caption || "";
+
+
+  document.getElementById(
+    "detailLikes"
+  ).textContent =
+    `♥ ${post.likes || 0} ${
+      (post.likes || 0) === 1
+        ? "like"
+        : "likes"
+    }`;
+
+
   document.getElementById(
     "detailDate"
   ).textContent =
-    formatDate(post.createdAt);
+    formatDate(
+      post.createdAt
+    );
 
-  openModal("detailModal");
+
+  renderCarousel();
+
+
+  openModal(
+    "detailModal"
+  );
+
 }
 
 
-/* ------------------------------------------
+/* ================================================
+   CAROUSEL
+================================================ */
+
+function renderCarousel() {
+
+  const total =
+    currentPostImages.length;
+
+
+  const image =
+    currentPostImages[
+      currentImageIndex
+    ];
+
+
+  document.getElementById(
+    "detailImage"
+  ).src =
+    image;
+
+
+  document.getElementById(
+    "carouselCounter"
+  ).textContent =
+    `${currentImageIndex + 1} / ${total}`;
+
+
+  const prev =
+    document.getElementById(
+      "carouselPrev"
+    );
+
+  const next =
+    document.getElementById(
+      "carouselNext"
+    );
+
+
+  prev.style.display =
+    total > 1
+      ? "block"
+      : "none";
+
+
+  next.style.display =
+    total > 1
+      ? "block"
+      : "none";
+
+
+  const dots =
+    document.getElementById(
+      "carouselDots"
+    );
+
+
+  dots.innerHTML = "";
+
+
+  if (total > 1) {
+
+    currentPostImages.forEach(
+      (_, index) => {
+
+        const dot =
+          document.createElement(
+            "div"
+          );
+
+
+        dot.className =
+          "carousel-dot";
+
+
+        if (
+          index ===
+          currentImageIndex
+        ) {
+
+          dot.classList.add(
+            "active"
+          );
+
+        }
+
+
+        dots.appendChild(dot);
+
+      }
+    );
+
+  }
+
+}
+
+
+/* ================================================
+   CAROUSEL NEXT / PREVIOUS
+================================================ */
+
+document
+  .getElementById("carouselNext")
+  .addEventListener(
+    "click",
+    event => {
+
+      event.stopPropagation();
+
+
+      if (
+        currentPostImages.length <= 1
+      ) return;
+
+
+      currentImageIndex =
+        (
+          currentImageIndex + 1
+        ) %
+        currentPostImages.length;
+
+
+      renderCarousel();
+
+    }
+  );
+
+
+document
+  .getElementById("carouselPrev")
+  .addEventListener(
+    "click",
+    event => {
+
+      event.stopPropagation();
+
+
+      if (
+        currentPostImages.length <= 1
+      ) return;
+
+
+      currentImageIndex =
+        (
+          currentImageIndex - 1 +
+          currentPostImages.length
+        ) %
+        currentPostImages.length;
+
+
+      renderCarousel();
+
+    }
+  );
+
+
+/* ================================================
+   KEYBOARD CAROUSEL
+================================================ */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      !document
+        .getElementById("detailModal")
+        .classList.contains("show")
+    ) return;
+
+
+    if (event.key === "ArrowRight") {
+
+      document
+        .getElementById(
+          "carouselNext"
+        )
+        .click();
+
+    }
+
+
+    if (event.key === "ArrowLeft") {
+
+      document
+        .getElementById(
+          "carouselPrev"
+        )
+        .click();
+
+    }
+
+  }
+);
+
+
+/* ================================================
+   SWIPE SUPPORT
+================================================ */
+
+let touchStartX = 0;
+
+
+const carousel =
+  document.getElementById(
+    "postCarousel"
+  );
+
+
+carousel.addEventListener(
+  "touchstart",
+  event => {
+
+    touchStartX =
+      event.changedTouches[0].screenX;
+
+  },
+  { passive: true }
+);
+
+
+carousel.addEventListener(
+  "touchend",
+  event => {
+
+    const touchEndX =
+      event.changedTouches[0].screenX;
+
+
+    const difference =
+      touchStartX - touchEndX;
+
+
+    if (
+      Math.abs(difference) < 40
+    ) return;
+
+
+    if (difference > 0) {
+
+      document
+        .getElementById(
+          "carouselNext"
+        )
+        .click();
+
+    } else {
+
+      document
+        .getElementById(
+          "carouselPrev"
+        )
+        .click();
+
+    }
+
+  },
+  { passive: true }
+);
+
+
+/* ================================================
+   LIKE POST
+================================================ */
+
+document
+  .getElementById("likePostBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (!selectedPostId)
+        return;
+
+
+      const posts =
+        getPosts();
+
+
+      const post =
+        posts.find(
+          p => p.id === selectedPostId
+        );
+
+
+      if (!post) return;
+
+
+      post.likes =
+        (post.likes || 0) + 1;
+
+
+      savePosts(posts);
+
+
+      document.getElementById(
+        "detailLikes"
+      ).textContent =
+        `♥ ${post.likes} ${
+          post.likes === 1
+            ? "like"
+            : "likes"
+        }`;
+
+
+      render();
+
+
+      showToast(
+        "Liked!"
+      );
+
+    }
+  );
+
+
+/* ================================================
    DELETE POST
------------------------------------------- */
+================================================ */
 
 document
   .getElementById("deletePostBtn")
-  .addEventListener("click", function() {
+  .addEventListener(
+    "click",
+    () => {
 
-    if (!selectedPostId) return;
+      if (!selectedPostId)
+        return;
 
-    const confirmed =
-      confirm("Delete this post?");
 
-    if (!confirmed) return;
+      const confirmed =
+        confirm(
+          "Delete this post?"
+        );
 
-    let posts = getPosts();
 
-    posts =
-      posts.filter(
-        post => post.id !== selectedPostId
+      if (!confirmed)
+        return;
+
+
+      let posts =
+        getPosts();
+
+
+      posts =
+        posts.filter(
+          post =>
+            post.id !==
+            selectedPostId
+        );
+
+
+      savePosts(posts);
+
+
+      selectedPostId =
+        null;
+
+
+      currentPostImages =
+        [];
+
+
+      closeModal(
+        "detailModal"
       );
 
-    savePosts(posts);
 
-    selectedPostId = null;
-
-    closeModal("detailModal");
-
-    render();
-
-    showToast("Post deleted.");
-  });
+      render();
 
 
-/* ------------------------------------------
-   MODALS
------------------------------------------- */
+      showToast(
+        "Post deleted."
+      );
+
+    }
+  );
+
+
+/* ================================================
+   MODAL FUNCTIONS
+================================================ */
 
 function openModal(id) {
 
@@ -1575,7 +2690,10 @@ function openModal(id) {
     .getElementById(id)
     .classList.add("show");
 
-  document.body.style.overflow = "hidden";
+
+  document.body.style.overflow =
+    "hidden";
+
 }
 
 
@@ -1585,28 +2703,30 @@ function closeModal(id) {
     .getElementById(id)
     .classList.remove("show");
 
-  document.body.style.overflow = "";
+
+  document.body.style.overflow =
+    "";
 
 }
 
-
-/* Close buttons */
 
 document
   .querySelectorAll("[data-close]")
   .forEach(button => {
 
-    button.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
 
-      closeModal(
-        button.dataset.close
-      );
+        closeModal(
+          button.dataset.close
+        );
 
-    });
+      }
+    );
+
   });
 
-
-/* Close when clicking backdrop */
 
 document
   .querySelectorAll(".modal-backdrop")
@@ -1614,10 +2734,17 @@ document
 
     backdrop.addEventListener(
       "click",
-      function(event) {
+      event => {
 
-        if (event.target === this) {
-          closeModal(this.id);
+        if (
+          event.target ===
+          backdrop
+        ) {
+
+          closeModal(
+            backdrop.id
+          );
+
         }
 
       }
@@ -1626,76 +2753,103 @@ document
   });
 
 
-/* Escape key */
-
 document.addEventListener(
   "keydown",
-  function(event) {
+  event => {
 
-    if (event.key !== "Escape") return;
+    if (
+      event.key !== "Escape"
+    ) return;
+
 
     document
-      .querySelectorAll(".modal-backdrop.show")
+      .querySelectorAll(
+        ".modal-backdrop.show"
+      )
       .forEach(modal => {
-        closeModal(modal.id);
+
+        closeModal(
+          modal.id
+        );
+
       });
 
   }
 );
 
 
-/* ------------------------------------------
-   DARK MODE
------------------------------------------- */
+/* ================================================
+   THEME
+================================================ */
 
 const themeToggle =
-  document.getElementById("themeToggle");
+  document.getElementById(
+    "themeToggle"
+  );
 
 
 function loadTheme() {
 
   const saved =
-    localStorage.getItem(THEME_KEY);
+    localStorage.getItem(
+      THEME_KEY
+    );
+
 
   if (saved === "dark") {
 
-    document.body.classList.add("dark");
+    document.body.classList.add(
+      "dark"
+    );
 
-    themeToggle.textContent = "☀";
+    themeToggle.textContent =
+      "☀";
 
   } else {
 
-    themeToggle.textContent = "☾";
+    themeToggle.textContent =
+      "☾";
+
   }
+
 }
 
 
 themeToggle.addEventListener(
   "click",
-  function() {
+  () => {
 
-    document.body.classList.toggle("dark");
+    document.body.classList.toggle(
+      "dark"
+    );
+
 
     const dark =
-      document.body.classList.contains("dark");
+      document.body.classList.contains(
+        "dark"
+      );
+
 
     localStorage.setItem(
       THEME_KEY,
-      dark ? "dark" : "light"
+      dark
+        ? "dark"
+        : "light"
     );
 
+
     themeToggle.textContent =
-      dark ? "☀" : "☾";
+      dark
+        ? "☀"
+        : "☾";
+
   }
 );
 
 
-/* ------------------------------------------
-   IMAGE RESIZING
-
-   This keeps localStorage from filling
-   up too quickly with giant photos.
------------------------------------------- */
+/* ================================================
+   IMAGE RESIZER
+================================================ */
 
 function resizeImage(
   file,
@@ -1703,116 +2857,178 @@ function resizeImage(
   callback
 ) {
 
-  if (!file.type.startsWith("image/")) {
+  if (
+    !file.type.startsWith(
+      "image/"
+    )
+  ) {
 
-    showToast("Please choose an image file.");
+    showToast(
+      "Please choose an image."
+    );
 
     return;
+
   }
 
-  const reader = new FileReader();
 
-  reader.onload = function(event) {
+  const reader =
+    new FileReader();
 
-    const img = new Image();
 
-    img.onload = function() {
+  reader.onload =
+    event => {
 
-      let width = img.width;
-      let height = img.height;
+      const img =
+        new Image();
 
-      if (width > height) {
 
-        if (width > maxSize) {
+      img.onload =
+        () => {
 
-          height =
-            height * (maxSize / width);
+          let width =
+            img.width;
 
-          width = maxSize;
-        }
+          let height =
+            img.height;
 
-      } else {
 
-        if (height > maxSize) {
+          if (
+            width > maxSize ||
+            height > maxSize
+          ) {
 
-          width =
-            width * (maxSize / height);
+            const scale =
+              Math.min(
+                maxSize / width,
+                maxSize / height
+              );
 
-          height = maxSize;
-        }
-      }
 
-      const canvas =
-        document.createElement("canvas");
+            width *= scale;
+            height *= scale;
 
-      canvas.width = Math.round(width);
-      canvas.height = Math.round(height);
+          }
 
-      const context =
-        canvas.getContext("2d");
 
-      context.drawImage(
-        img,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
+          const canvas =
+            document.createElement(
+              "canvas"
+            );
 
-      callback(
-        canvas.toDataURL(
-          "image/jpeg",
-          0.82
-        )
-      );
+
+          canvas.width =
+            Math.round(width);
+
+          canvas.height =
+            Math.round(height);
+
+
+          const context =
+            canvas.getContext(
+              "2d"
+            );
+
+
+          context.drawImage(
+            img,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+
+
+          callback(
+            canvas.toDataURL(
+              "image/jpeg",
+              0.82
+            )
+          );
+
+        };
+
+
+      img.src =
+        event.target.result;
+
     };
 
-    img.src = event.target.result;
-  };
 
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(
+    file
+  );
+
 }
 
 
-/* ------------------------------------------
+/* ================================================
    HELPERS
------------------------------------------- */
+================================================ */
 
 function getInitials(name) {
 
-  if (!name) return "Y";
+  if (!name)
+    return "Y";
+
 
   const parts =
-    name.trim().split(/\s+/);
+    name
+      .trim()
+      .split(/\s+/);
 
-  if (parts.length === 1) {
+
+  if (
+    parts.length === 1
+  ) {
 
     return parts[0]
       .substring(0, 2)
       .toUpperCase();
+
   }
+
 
   return (
     parts[0][0] +
     parts[parts.length - 1][0]
   ).toUpperCase();
+
 }
 
 
 function escapeHTML(value) {
 
   return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
 }
 
 
 function formatDate(date) {
 
-  return new Date(date).toLocaleDateString(
+  return new Date(
+    date
+  ).toLocaleDateString(
     undefined,
     {
       year: "numeric",
@@ -1820,29 +3036,44 @@ function formatDate(date) {
       day: "numeric"
     }
   );
+
 }
 
 
 function showToast(message) {
 
-  toast.textContent = message;
+  toast.textContent =
+    message;
 
-  toast.classList.add("show");
 
-  setTimeout(() => {
+  toast.classList.add(
+    "show"
+  );
 
-    toast.classList.remove("show");
 
-  }, 2500);
+  setTimeout(
+    () => {
+
+      toast.classList.remove(
+        "show"
+      );
+
+    },
+    2500
+  );
+
 }
 
 
-/* ------------------------------------------
-   START APP
------------------------------------------- */
+/* ================================================
+   START
+================================================ */
 
 loadTheme();
-render();
+
+renderProfile();
+
+renderPosts();
 
 </script>
 
