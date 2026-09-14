@@ -1,0 +1,1851 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Private personal profile">
+  <title>My Profile</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #fafafa;
+      --card: #ffffff;
+      --text: #111111;
+      --muted: #737373;
+      --border: #dbdbdb;
+      --button: #0095f6;
+      --button-hover: #1877f2;
+      --danger: #ed4956;
+      --input: #f5f5f5;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    body.dark {
+      --bg: #000000;
+      --card: #121212;
+      --text: #f5f5f5;
+      --muted: #a8a8a8;
+      --border: #363636;
+      --input: #1c1c1c;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+      min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* ------------------------------
+       APP
+    ------------------------------ */
+
+    .app {
+      min-height: 100vh;
+    }
+
+    /* ------------------------------
+       TOP BAR
+    ------------------------------ */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 60px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner {
+      max-width: 975px;
+      height: 100%;
+      margin: auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+    }
+
+    .brand span {
+      font-weight: 400;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      border-radius: 50%;
+      font-size: 20px;
+    }
+
+    .icon-btn:hover {
+      background: var(--input);
+    }
+
+    /* ------------------------------
+       MAIN
+    ------------------------------ */
+
+    main {
+      max-width: 975px;
+      margin: auto;
+      padding: 30px 20px 80px;
+    }
+
+    /* ------------------------------
+       PROFILE HEADER
+    ------------------------------ */
+
+    .profile-header {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 55px;
+      padding: 25px 20px 45px;
+    }
+
+    .avatar-wrapper {
+      display: flex;
+      justify-content: center;
+    }
+
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+      padding: 3px;
+    }
+
+    .avatar-placeholder {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+      color: white;
+      font-size: 55px;
+      font-weight: 700;
+      border: 3px solid var(--card);
+      outline: 1px solid var(--border);
+    }
+
+    .profile-info {
+      min-width: 0;
+    }
+
+    .profile-top {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .username {
+      font-size: 28px;
+      font-weight: 400;
+    }
+
+    .profile-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--input);
+      color: var(--text);
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn-primary {
+      background: var(--button);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .stats {
+      display: flex;
+      gap: 35px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      font-size: 16px;
+    }
+
+    .stat strong {
+      font-weight: 700;
+    }
+
+    .bio-name {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .bio {
+      white-space: pre-wrap;
+      line-height: 1.45;
+      max-width: 500px;
+      color: var(--text);
+    }
+
+    .private-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    /* ------------------------------
+       POSTS NAV
+    ------------------------------ */
+
+    .posts-nav {
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+    }
+
+    .posts-nav button {
+      height: 52px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      position: relative;
+    }
+
+    .posts-nav button.active {
+      color: var(--text);
+    }
+
+    .posts-nav button.active::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--text);
+    }
+
+    /* ------------------------------
+       POST GRID
+    ------------------------------ */
+
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .post {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: var(--input);
+      cursor: pointer;
+    }
+
+    .post img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s;
+    }
+
+    .post:hover img {
+      transform: scale(1.03);
+    }
+
+    .post-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .post:hover .post-overlay {
+      opacity: 1;
+    }
+
+    .post-overlay span {
+      font-weight: 700;
+    }
+
+    .text-post {
+      width: 100%;
+      height: 100%;
+      padding: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(135deg, #833ab4, #fd1d1d);
+      color: white;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    /* ------------------------------
+       EMPTY STATE
+    ------------------------------ */
+
+    .empty {
+      grid-column: 1 / -1;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .empty-icon {
+      width: 65px;
+      height: 65px;
+      margin: 0 auto 20px;
+      border: 2px solid var(--text);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+    }
+
+    .empty h2 {
+      margin-bottom: 8px;
+    }
+
+    .empty p {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* ------------------------------
+       MODAL
+    ------------------------------ */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      width: min(500px, 100%);
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-header {
+      height: 55px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h2 {
+      font-size: 16px;
+    }
+
+    .close-btn {
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 25px;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 25px;
+    }
+
+    /* ------------------------------
+       FORMS
+    ------------------------------ */
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .form-control {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--input);
+      color: var(--text);
+      border-radius: 7px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--muted);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .file-label {
+      display: block;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 25px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .file-label:hover {
+      background: var(--input);
+    }
+
+    .file-label input {
+      display: none;
+    }
+
+    .preview {
+      margin-top: 15px;
+      display: none;
+    }
+
+    .preview.show {
+      display: block;
+    }
+
+    .preview img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: var(--input);
+    }
+
+    .modal-footer {
+      padding: 15px 25px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* ------------------------------
+       POST DETAIL
+    ------------------------------ */
+
+    .post-detail {
+      max-width: 850px;
+    }
+
+    .post-detail-content {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      min-height: 400px;
+    }
+
+    .post-detail-image {
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .post-detail-image img {
+      max-height: 600px;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    .post-detail-info {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-detail-caption {
+      margin-top: 20px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .post-detail-date {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: auto;
+      padding-top: 20px;
+    }
+
+    /* ------------------------------
+       TOAST
+    ------------------------------ */
+
+    .toast {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 200;
+      background: #262626;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ------------------------------
+       RESPONSIVE
+    ------------------------------ */
+
+    @media (max-width: 700px) {
+      main {
+        padding: 10px 0 60px;
+      }
+
+      .profile-header {
+        grid-template-columns: 90px 1fr;
+        gap: 20px;
+        padding: 20px 15px 30px;
+      }
+
+      .avatar,
+      .avatar-placeholder {
+        width: 80px;
+        height: 80px;
+        font-size: 30px;
+      }
+
+      .username {
+        font-size: 20px;
+      }
+
+      .profile-top {
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .stats {
+        gap: 18px;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .profile-buttons {
+        width: 100%;
+      }
+
+      .profile-buttons .btn {
+        flex: 1;
+      }
+
+      .posts-nav {
+        gap: 45px;
+      }
+
+      .post-grid {
+        gap: 2px;
+      }
+
+      .post-detail-content {
+        grid-template-columns: 1fr;
+      }
+
+      .post-detail-info {
+        min-height: 250px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        My<span>Profile</span>
+      </div>
+
+      <div class="top-actions">
+        <button
+          class="icon-btn"
+          id="addPostTop"
+          title="Create post"
+          aria-label="Create post"
+        >＋</button>
+
+        <button
+          class="icon-btn"
+          id="themeToggle"
+          title="Toggle theme"
+          aria-label="Toggle theme"
+        >☾</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN PROFILE -->
+  <main>
+
+    <section class="profile-header">
+
+      <div class="avatar-wrapper" id="avatarContainer">
+        <!-- Avatar inserted by JavaScript -->
+      </div>
+
+      <div class="profile-info">
+
+        <div class="profile-top">
+          <h1 class="username" id="usernameDisplay">
+            username
+          </h1>
+
+          <div class="profile-buttons">
+            <button class="btn" id="editProfileBtn">
+              Edit profile
+            </button>
+
+            <button class="btn btn-primary" id="addPostBtn">
+              Add post
+            </button>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <strong id="postCount">0</strong> posts
+          </div>
+
+          <div class="stat">
+            <strong id="likesCount">0</strong> likes
+          </div>
+        </div>
+
+        <div class="bio-name" id="nameDisplay">
+          Your Name
+        </div>
+
+        <div class="bio" id="bioDisplay">
+          Add a bio to your profile.
+        </div>
+
+        <div class="private-label">
+          🔒 Private — stored only on this browser
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- POSTS NAV -->
+    <div class="posts-nav">
+      <button class="active">
+        ▦ POSTS
+      </button>
+
+      <button id="aboutTab">
+        👤 PROFILE
+      </button>
+    </div>
+
+    <!-- POSTS -->
+    <section class="post-grid" id="postGrid">
+      <!-- Posts inserted by JavaScript -->
+    </section>
+
+  </main>
+</div>
+
+
+<!-- ==========================================
+     EDIT PROFILE MODAL
+========================================== -->
+
+<div class="modal-backdrop" id="profileModal">
+
+  <div class="modal">
+
+    <div class="modal-header">
+      <h2>Edit profile</h2>
+
+      <button
+        class="close-btn"
+        data-close="profileModal"
+      >×</button>
+    </div>
+
+    <form id="profileForm">
+
+      <div class="modal-body">
+
+        <div class="form-group">
+          <label for="profileName">
+            Name
+          </label>
+
+          <input
+            class="form-control"
+            id="profileName"
+            maxlength="50"
+            placeholder="Your name"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="profileUsername">
+            Username
+          </label>
+
+          <input
+            class="form-control"
+            id="profileUsername"
+            maxlength="30"
+            placeholder="username"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="profileBio">
+            Bio
+          </label>
+
+          <textarea
+            class="form-control"
+            id="profileBio"
+            maxlength="150"
+            placeholder="Tell people about yourself..."
+          ></textarea>
+
+          <small style="color: var(--muted);">
+            Maximum 150 characters
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>
+            Profile picture
+          </label>
+
+          <label class="file-label">
+            📷 Choose a profile picture
+            <input
+              type="file"
+              id="profileImage"
+              accept="image/*"
+            >
+          </label>
+
+          <div class="preview" id="profilePreview">
+            <img id="profilePreviewImage" alt="Profile preview">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn"
+          data-close="profileModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+        >
+          Save changes
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
+<!-- ==========================================
+     ADD POST MODAL
+========================================== -->
+
+<div class="modal-backdrop" id="postModal">
+
+  <div class="modal">
+
+    <div class="modal-header">
+      <h2>Create new post</h2>
+
+      <button
+        class="close-btn"
+        data-close="postModal"
+      >×</button>
+    </div>
+
+    <form id="postForm">
+
+      <div class="modal-body">
+
+        <div class="form-group">
+
+          <label class="file-label">
+            🖼️ Choose an image
+            <input
+              type="file"
+              id="postImage"
+              accept="image/*"
+              required
+            >
+          </label>
+
+          <div class="preview" id="postPreview">
+            <img id="postPreviewImage" alt="Post preview">
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="postCaption">
+            Caption
+          </label>
+
+          <textarea
+            class="form-control"
+            id="postCaption"
+            maxlength="500"
+            placeholder="Write a caption..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn"
+          data-close="postModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+        >
+          Share
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
+<!-- ==========================================
+     POST DETAIL MODAL
+========================================== -->
+
+<div class="modal-backdrop" id="detailModal">
+
+  <div class="modal post-detail">
+
+    <div class="modal-header">
+
+      <h2>Post</h2>
+
+      <button
+        class="close-btn"
+        data-close="detailModal"
+      >×</button>
+
+    </div>
+
+    <div class="post-detail-content">
+
+      <div class="post-detail-image">
+        <img id="detailImage" alt="Post">
+      </div>
+
+      <div class="post-detail-info">
+
+        <strong id="detailUsername">
+          username
+        </strong>
+
+        <div
+          class="post-detail-caption"
+          id="detailCaption"
+        ></div>
+
+        <div class="post-detail-date" id="detailDate"></div>
+
+        <button
+          class="btn btn-danger"
+          id="deletePostBtn"
+          style="margin-top: 15px;"
+        >
+          Delete post
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+
+<script>
+/* ==================================================
+   PRIVATE PROFILE APP
+
+   Everything is stored in localStorage.
+
+   Nothing is uploaded to a server.
+================================================== */
+
+
+/* ------------------------------------------
+   DEFAULT DATA
+------------------------------------------ */
+
+const defaultProfile = {
+  name: "Your Name",
+  username: "username",
+  bio: "Welcome to my private profile. ✨",
+  avatar: null
+};
+
+
+/* ------------------------------------------
+   STORAGE
+------------------------------------------ */
+
+const PROFILE_KEY = "private_profile_data";
+const POSTS_KEY = "private_profile_posts";
+const THEME_KEY = "private_profile_theme";
+
+
+function getProfile() {
+  try {
+    const saved = localStorage.getItem(PROFILE_KEY);
+
+    return saved
+      ? { ...defaultProfile, ...JSON.parse(saved) }
+      : { ...defaultProfile };
+  } catch {
+    return { ...defaultProfile };
+  }
+}
+
+
+function saveProfile(profile) {
+  localStorage.setItem(
+    PROFILE_KEY,
+    JSON.stringify(profile)
+  );
+}
+
+
+function getPosts() {
+  try {
+    return JSON.parse(
+      localStorage.getItem(POSTS_KEY)
+    ) || [];
+  } catch {
+    return [];
+  }
+}
+
+
+function savePosts(posts) {
+  localStorage.setItem(
+    POSTS_KEY,
+    JSON.stringify(posts)
+  );
+}
+
+
+/* ------------------------------------------
+   ELEMENTS
+------------------------------------------ */
+
+const avatarContainer =
+  document.getElementById("avatarContainer");
+
+const usernameDisplay =
+  document.getElementById("usernameDisplay");
+
+const nameDisplay =
+  document.getElementById("nameDisplay");
+
+const bioDisplay =
+  document.getElementById("bioDisplay");
+
+const postCount =
+  document.getElementById("postCount");
+
+const likesCount =
+  document.getElementById("likesCount");
+
+const postGrid =
+  document.getElementById("postGrid");
+
+const toast =
+  document.getElementById("toast");
+
+
+/* ------------------------------------------
+   RENDER PROFILE
+------------------------------------------ */
+
+function renderProfile() {
+
+  const profile = getProfile();
+
+  usernameDisplay.textContent =
+    profile.username || "username";
+
+  nameDisplay.textContent =
+    profile.name || "Your Name";
+
+  bioDisplay.textContent =
+    profile.bio || "Add a bio to your profile.";
+
+  if (profile.avatar) {
+
+    avatarContainer.innerHTML = `
+      <img
+        class="avatar"
+        src="${profile.avatar}"
+        alt="Profile picture"
+      >
+    `;
+
+  } else {
+
+    const initials =
+      getInitials(profile.name);
+
+    avatarContainer.innerHTML = `
+      <div class="avatar-placeholder">
+        ${escapeHTML(initials)}
+      </div>
+    `;
+  }
+
+  const posts = getPosts();
+
+  postCount.textContent = posts.length;
+
+  const totalLikes = posts.reduce(
+    (total, post) => total + (post.likes || 0),
+    0
+  );
+
+  likesCount.textContent = totalLikes;
+}
+
+
+/* ------------------------------------------
+   RENDER POSTS
+------------------------------------------ */
+
+function renderPosts() {
+
+  const posts = getPosts();
+
+  postGrid.innerHTML = "";
+
+  if (posts.length === 0) {
+
+    postGrid.innerHTML = `
+      <div class="empty">
+
+        <div class="empty-icon">
+          📷
+        </div>
+
+        <h2>Share your first photo</h2>
+
+        <p>
+          When you add posts, they'll appear here.
+        </p>
+
+        <button
+          class="btn btn-primary"
+          onclick="openModal('postModal')"
+        >
+          Add your first post
+        </button>
+
+      </div>
+    `;
+
+    return;
+  }
+
+  posts.forEach(post => {
+
+    const element =
+      document.createElement("article");
+
+    element.className = "post";
+
+    element.innerHTML = `
+      ${
+        post.image
+          ? `
+            <img
+              src="${post.image}"
+              alt="${escapeHTML(post.caption || "Post")}"
+              loading="lazy"
+            >
+          `
+          : `
+            <div class="text-post">
+              ${escapeHTML(post.caption || "")}
+            </div>
+          `
+      }
+
+      <div class="post-overlay">
+        <span>♥ ${post.likes || 0}</span>
+        <span>💬</span>
+      </div>
+    `;
+
+    element.addEventListener("click", () => {
+      openPostDetail(post.id);
+    });
+
+    postGrid.appendChild(element);
+  });
+}
+
+
+/* ------------------------------------------
+   INITIAL RENDER
+------------------------------------------ */
+
+function render() {
+  renderProfile();
+  renderPosts();
+}
+
+
+/* ------------------------------------------
+   PROFILE EDITING
+------------------------------------------ */
+
+const editProfileBtn =
+  document.getElementById("editProfileBtn");
+
+
+editProfileBtn.addEventListener("click", () => {
+
+  const profile = getProfile();
+
+  document.getElementById("profileName").value =
+    profile.name || "";
+
+  document.getElementById("profileUsername").value =
+    profile.username || "";
+
+  document.getElementById("profileBio").value =
+    profile.bio || "";
+
+  if (profile.avatar) {
+
+    document.getElementById(
+      "profilePreviewImage"
+    ).src = profile.avatar;
+
+    document.getElementById(
+      "profilePreview"
+    ).classList.add("show");
+
+  } else {
+
+    document.getElementById(
+      "profilePreview"
+    ).classList.remove("show");
+  }
+
+  openModal("profileModal");
+});
+
+
+/* ------------------------------------------
+   PROFILE IMAGE
+------------------------------------------ */
+
+let newAvatar = null;
+
+
+document
+  .getElementById("profileImage")
+  .addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (!file) return;
+
+    resizeImage(file, 600, function(dataURL) {
+
+      newAvatar = dataURL;
+
+      document.getElementById(
+        "profilePreviewImage"
+      ).src = dataURL;
+
+      document.getElementById(
+        "profilePreview"
+      ).classList.add("show");
+
+    });
+  });
+
+
+/* ------------------------------------------
+   SAVE PROFILE
+------------------------------------------ */
+
+document
+  .getElementById("profileForm")
+  .addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const profile = getProfile();
+
+    profile.name =
+      document
+        .getElementById("profileName")
+        .value
+        .trim() || "Your Name";
+
+    profile.username =
+      document
+        .getElementById("profileUsername")
+        .value
+        .trim()
+        .replace(/\s+/g, "")
+        .replace(/^@/, "")
+        .toLowerCase() || "username";
+
+    profile.bio =
+      document
+        .getElementById("profileBio")
+        .value
+        .trim();
+
+    if (newAvatar !== null) {
+      profile.avatar = newAvatar;
+    }
+
+    saveProfile(profile);
+
+    newAvatar = null;
+
+    closeModal("profileModal");
+
+    render();
+
+    showToast("Profile updated!");
+  });
+
+
+/* ------------------------------------------
+   ADD POST
+------------------------------------------ */
+
+const addPostBtn =
+  document.getElementById("addPostBtn");
+
+const addPostTop =
+  document.getElementById("addPostTop");
+
+
+addPostBtn.addEventListener(
+  "click",
+  () => openPostModal()
+);
+
+addPostTop.addEventListener(
+  "click",
+  () => openPostModal()
+);
+
+
+function openPostModal() {
+
+  document
+    .getElementById("postForm")
+    .reset();
+
+  document
+    .getElementById("postPreview")
+    .classList.remove("show");
+
+  openModal("postModal");
+}
+
+
+/* ------------------------------------------
+   POST IMAGE PREVIEW
+------------------------------------------ */
+
+let newPostImage = null;
+
+
+document
+  .getElementById("postImage")
+  .addEventListener("change", function() {
+
+    const file = this.files[0];
+
+    if (!file) return;
+
+    resizeImage(file, 1400, function(dataURL) {
+
+      newPostImage = dataURL;
+
+      document.getElementById(
+        "postPreviewImage"
+      ).src = dataURL;
+
+      document.getElementById(
+        "postPreview"
+      ).classList.add("show");
+
+    });
+  });
+
+
+/* ------------------------------------------
+   CREATE POST
+------------------------------------------ */
+
+document
+  .getElementById("postForm")
+  .addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    if (!newPostImage) {
+
+      showToast("Please choose an image.");
+
+      return;
+    }
+
+    const caption =
+      document
+        .getElementById("postCaption")
+        .value
+        .trim();
+
+    const posts = getPosts();
+
+    const newPost = {
+      id: Date.now().toString(),
+      image: newPostImage,
+      caption: caption,
+      likes: 0,
+      createdAt: new Date().toISOString()
+    };
+
+    posts.unshift(newPost);
+
+    try {
+
+      savePosts(posts);
+
+    } catch (error) {
+
+      showToast(
+        "The image is too large for browser storage."
+      );
+
+      return;
+    }
+
+    newPostImage = null;
+
+    closeModal("postModal");
+
+    render();
+
+    showToast("Post added!");
+  });
+
+
+/* ------------------------------------------
+   POST DETAIL
+------------------------------------------ */
+
+let selectedPostId = null;
+
+
+function openPostDetail(id) {
+
+  const posts = getPosts();
+
+  const post =
+    posts.find(p => p.id === id);
+
+  if (!post) return;
+
+  selectedPostId = id;
+
+  document.getElementById(
+    "detailImage"
+  ).src = post.image;
+
+  document.getElementById(
+    "detailCaption"
+  ).textContent =
+    post.caption || "";
+
+  document.getElementById(
+    "detailUsername"
+  ).textContent =
+    "@" + getProfile().username;
+
+  document.getElementById(
+    "detailDate"
+  ).textContent =
+    formatDate(post.createdAt);
+
+  openModal("detailModal");
+}
+
+
+/* ------------------------------------------
+   DELETE POST
+------------------------------------------ */
+
+document
+  .getElementById("deletePostBtn")
+  .addEventListener("click", function() {
+
+    if (!selectedPostId) return;
+
+    const confirmed =
+      confirm("Delete this post?");
+
+    if (!confirmed) return;
+
+    let posts = getPosts();
+
+    posts =
+      posts.filter(
+        post => post.id !== selectedPostId
+      );
+
+    savePosts(posts);
+
+    selectedPostId = null;
+
+    closeModal("detailModal");
+
+    render();
+
+    showToast("Post deleted.");
+  });
+
+
+/* ------------------------------------------
+   MODALS
+------------------------------------------ */
+
+function openModal(id) {
+
+  document
+    .getElementById(id)
+    .classList.add("show");
+
+  document.body.style.overflow = "hidden";
+}
+
+
+function closeModal(id) {
+
+  document
+    .getElementById(id)
+    .classList.remove("show");
+
+  document.body.style.overflow = "";
+
+}
+
+
+/* Close buttons */
+
+document
+  .querySelectorAll("[data-close]")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      closeModal(
+        button.dataset.close
+      );
+
+    });
+  });
+
+
+/* Close when clicking backdrop */
+
+document
+  .querySelectorAll(".modal-backdrop")
+  .forEach(backdrop => {
+
+    backdrop.addEventListener(
+      "click",
+      function(event) {
+
+        if (event.target === this) {
+          closeModal(this.id);
+        }
+
+      }
+    );
+
+  });
+
+
+/* Escape key */
+
+document.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (event.key !== "Escape") return;
+
+    document
+      .querySelectorAll(".modal-backdrop.show")
+      .forEach(modal => {
+        closeModal(modal.id);
+      });
+
+  }
+);
+
+
+/* ------------------------------------------
+   DARK MODE
+------------------------------------------ */
+
+const themeToggle =
+  document.getElementById("themeToggle");
+
+
+function loadTheme() {
+
+  const saved =
+    localStorage.getItem(THEME_KEY);
+
+  if (saved === "dark") {
+
+    document.body.classList.add("dark");
+
+    themeToggle.textContent = "☀";
+
+  } else {
+
+    themeToggle.textContent = "☾";
+  }
+}
+
+
+themeToggle.addEventListener(
+  "click",
+  function() {
+
+    document.body.classList.toggle("dark");
+
+    const dark =
+      document.body.classList.contains("dark");
+
+    localStorage.setItem(
+      THEME_KEY,
+      dark ? "dark" : "light"
+    );
+
+    themeToggle.textContent =
+      dark ? "☀" : "☾";
+  }
+);
+
+
+/* ------------------------------------------
+   IMAGE RESIZING
+
+   This keeps localStorage from filling
+   up too quickly with giant photos.
+------------------------------------------ */
+
+function resizeImage(
+  file,
+  maxSize,
+  callback
+) {
+
+  if (!file.type.startsWith("image/")) {
+
+    showToast("Please choose an image file.");
+
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+
+    const img = new Image();
+
+    img.onload = function() {
+
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+
+        if (width > maxSize) {
+
+          height =
+            height * (maxSize / width);
+
+          width = maxSize;
+        }
+
+      } else {
+
+        if (height > maxSize) {
+
+          width =
+            width * (maxSize / height);
+
+          height = maxSize;
+        }
+      }
+
+      const canvas =
+        document.createElement("canvas");
+
+      canvas.width = Math.round(width);
+      canvas.height = Math.round(height);
+
+      const context =
+        canvas.getContext("2d");
+
+      context.drawImage(
+        img,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      callback(
+        canvas.toDataURL(
+          "image/jpeg",
+          0.82
+        )
+      );
+    };
+
+    img.src = event.target.result;
+  };
+
+  reader.readAsDataURL(file);
+}
+
+
+/* ------------------------------------------
+   HELPERS
+------------------------------------------ */
+
+function getInitials(name) {
+
+  if (!name) return "Y";
+
+  const parts =
+    name.trim().split(/\s+/);
+
+  if (parts.length === 1) {
+
+    return parts[0]
+      .substring(0, 2)
+      .toUpperCase();
+  }
+
+  return (
+    parts[0][0] +
+    parts[parts.length - 1][0]
+  ).toUpperCase();
+}
+
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function formatDate(date) {
+
+  return new Date(date).toLocaleDateString(
+    undefined,
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }
+  );
+}
+
+
+function showToast(message) {
+
+  toast.textContent = message;
+
+  toast.classList.add("show");
+
+  setTimeout(() => {
+
+    toast.classList.remove("show");
+
+  }, 2500);
+}
+
+
+/* ------------------------------------------
+   START APP
+------------------------------------------ */
+
+loadTheme();
+render();
+
+</script>
+
+</body>
+</html>
+```
