@@ -1,10 +1,8 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Private personal profile">
 <title>My Profile</title>
 
 <style>
@@ -21,11 +19,10 @@
   --muted: #737373;
   --border: #dbdbdb;
   --button: #0095f6;
-  --button-hover: #1877f2;
-  --danger: #ed4956;
   --input: #f5f5f5;
-  --overlay: rgba(0,0,0,.65);
-  --shadow: 0 8px 30px rgba(0,0,0,.15);
+  --danger: #ed4956;
+  --overlay: rgba(0,0,0,.68);
+  --shadow: 0 10px 35px rgba(0,0,0,.18);
 }
 
 body.dark {
@@ -35,11 +32,12 @@ body.dark {
   --muted: #a8a8a8;
   --border: #363636;
   --input: #1c1c1c;
-  --shadow: 0 8px 30px rgba(0,0,0,.5);
+  --shadow: 0 10px 35px rgba(0,0,0,.55);
 }
 
-html {
-  scroll-behavior: smooth;
+html,
+body {
+  min-height: 100%;
 }
 
 body {
@@ -54,7 +52,6 @@ body {
     Helvetica,
     Arial,
     sans-serif;
-  transition: background .2s, color .2s;
 }
 
 button,
@@ -73,15 +70,17 @@ img {
 }
 
 
-/* ================================
+/* =========================================
    TOP BAR
-================================ */
+========================================= */
 
 .topbar {
   position: sticky;
   top: 0;
   z-index: 50;
+
   height: 60px;
+
   background: var(--card);
   border-bottom: 1px solid var(--border);
 }
@@ -89,6 +88,7 @@ img {
 .topbar-inner {
   width: min(975px, 100%);
   height: 100%;
+
   margin: auto;
   padding: 0 20px;
 
@@ -100,7 +100,7 @@ img {
 .brand {
   font-size: 22px;
   font-weight: 700;
-  letter-spacing: -.8px;
+  letter-spacing: -.7px;
 }
 
 .brand span {
@@ -122,7 +122,7 @@ img {
   background: transparent;
   color: var(--text);
 
-  font-size: 21px;
+  font-size: 22px;
 }
 
 .icon-btn:hover {
@@ -130,20 +130,21 @@ img {
 }
 
 
-/* ================================
+/* =========================================
    MAIN
-================================ */
+========================================= */
 
 main {
   width: min(975px, 100%);
   margin: auto;
+
   padding: 20px 20px 80px;
 }
 
 
-/* ================================
+/* =========================================
    PROFILE
-================================ */
+========================================= */
 
 .profile-header {
   display: grid;
@@ -158,23 +159,22 @@ main {
   justify-content: center;
 }
 
-.avatar {
-  width: 150px;
-  height: 150px;
-
-  border-radius: 50%;
-  object-fit: cover;
-
-  border: 3px solid var(--card);
-  outline: 1px solid var(--border);
-}
-
+.avatar,
 .avatar-placeholder {
   width: 150px;
   height: 150px;
 
   border-radius: 50%;
 
+  border: 3px solid var(--card);
+  outline: 1px solid var(--border);
+}
+
+.avatar {
+  object-fit: cover;
+}
+
+.avatar-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -188,11 +188,9 @@ main {
     );
 
   color: white;
-  font-size: 48px;
-  font-weight: 700;
 
-  border: 3px solid var(--card);
-  outline: 1px solid var(--border);
+  font-size: 45px;
+  font-weight: 700;
 }
 
 .profile-info {
@@ -247,11 +245,13 @@ main {
 
 .stats {
   display: flex;
-  gap: 30px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
 
   margin-bottom: 20px;
 
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .stat strong {
@@ -264,8 +264,10 @@ main {
 }
 
 .bio {
-  max-width: 500px;
+  max-width: 550px;
+
   white-space: pre-wrap;
+
   line-height: 1.45;
 }
 
@@ -281,9 +283,9 @@ main {
 }
 
 
-/* ================================
+/* =========================================
    POSTS NAV
-================================ */
+========================================= */
 
 .posts-nav {
   display: flex;
@@ -321,13 +323,14 @@ main {
   right: 0;
 
   height: 1px;
+
   background: var(--text);
 }
 
 
-/* ================================
-   POST GRID
-================================ */
+/* =========================================
+   POSTS
+========================================= */
 
 .post-grid {
   display: grid;
@@ -347,7 +350,7 @@ main {
   cursor: pointer;
 }
 
-.post img {
+.post > img {
   width: 100%;
   height: 100%;
 
@@ -356,13 +359,14 @@ main {
   transition: transform .25s;
 }
 
-.post:hover img {
-  transform: scale(1.03);
+.post:hover > img {
+  transform: scale(1.035);
 }
 
 .post-multiple {
   position: absolute;
-  top: 10px;
+
+  top: 9px;
   right: 10px;
 
   z-index: 2;
@@ -371,8 +375,7 @@ main {
 
   font-size: 19px;
 
-  text-shadow:
-    0 1px 4px rgba(0,0,0,.8);
+  text-shadow: 0 1px 5px #000;
 }
 
 .post-overlay {
@@ -384,7 +387,7 @@ main {
   justify-content: center;
   gap: 25px;
 
-  background: rgba(0,0,0,.5);
+  background: rgba(0,0,0,.48);
 
   color: white;
 
@@ -423,9 +426,9 @@ main {
 }
 
 
-/* ================================
+/* =========================================
    EMPTY
-================================ */
+========================================= */
 
 .empty {
   grid-column: 1 / -1;
@@ -457,13 +460,14 @@ main {
 
 .empty p {
   margin-bottom: 20px;
+
   color: var(--muted);
 }
 
 
-/* ================================
+/* =========================================
    MODALS
-================================ */
+========================================= */
 
 .modal-backdrop {
   position: fixed;
@@ -498,7 +502,7 @@ main {
 }
 
 .modal-header {
-  height: 55px;
+  min-height: 55px;
 
   padding: 0 20px;
 
@@ -537,9 +541,9 @@ main {
 }
 
 
-/* ================================
+/* =========================================
    FORMS
-================================ */
+========================================= */
 
 .form-group {
   margin-bottom: 18px;
@@ -601,9 +605,9 @@ textarea.form-control {
 }
 
 
-/* ================================
-   IMAGE PREVIEW
-================================ */
+/* =========================================
+   PREVIEWS
+========================================= */
 
 .preview {
   display: none;
@@ -637,15 +641,16 @@ textarea.form-control {
 .multi-preview img {
   width: 100%;
   aspect-ratio: 1;
+
   object-fit: cover;
 
   border-radius: 6px;
 }
 
 
-/* ================================
+/* =========================================
    POST DETAIL
-================================ */
+========================================= */
 
 .post-detail {
   width: min(900px, 100%);
@@ -670,6 +675,8 @@ textarea.form-control {
   justify-content: center;
 
   overflow: hidden;
+
+  touch-action: pan-y;
 }
 
 .carousel-image {
@@ -694,7 +701,7 @@ textarea.form-control {
   border: 0;
   border-radius: 50%;
 
-  background: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.88);
   color: #111;
 
   font-size: 22px;
@@ -793,9 +800,9 @@ textarea.form-control {
 }
 
 
-/* ================================
+/* =========================================
    TOAST
-================================ */
+========================================= */
 
 .toast {
   position: fixed;
@@ -834,9 +841,9 @@ textarea.form-control {
 }
 
 
-/* ================================
-   RESPONSIVE
-================================ */
+/* =========================================
+   MOBILE
+========================================= */
 
 @media (max-width: 700px) {
 
@@ -857,7 +864,7 @@ textarea.form-control {
     width: 80px;
     height: 80px;
 
-    font-size: 28px;
+    font-size: 27px;
   }
 
   .username {
@@ -866,6 +873,7 @@ textarea.form-control {
 
   .profile-top {
     gap: 10px;
+
     margin-bottom: 12px;
   }
 
@@ -878,9 +886,9 @@ textarea.form-control {
   }
 
   .stats {
-    gap: 16px;
+    gap: 14px;
 
-    font-size: 14px;
+    font-size: 13px;
 
     margin-bottom: 12px;
   }
@@ -911,9 +919,7 @@ textarea.form-control {
 
 <body>
 
-<!-- ==========================================
-     TOP BAR
-========================================== -->
+<!-- TOP BAR -->
 
 <header class="topbar">
 
@@ -929,12 +935,14 @@ textarea.form-control {
         class="icon-btn"
         id="addPostTop"
         title="Create post"
+        type="button"
       >＋</button>
 
       <button
         class="icon-btn"
         id="themeToggle"
         title="Toggle theme"
+        type="button"
       >☾</button>
 
     </div>
@@ -944,13 +952,11 @@ textarea.form-control {
 </header>
 
 
-<!-- ==========================================
-     MAIN
-========================================== -->
+<!-- MAIN -->
 
 <main>
 
-  <!-- PROFILE HEADER -->
+  <!-- PROFILE -->
 
   <section class="profile-header">
 
@@ -977,6 +983,7 @@ textarea.form-control {
           <button
             class="btn"
             id="editProfileBtn"
+            type="button"
           >
             Edit profile
           </button>
@@ -984,6 +991,7 @@ textarea.form-control {
           <button
             class="btn btn-primary"
             id="addPostBtn"
+            type="button"
           >
             Add post
           </button>
@@ -1001,7 +1009,7 @@ textarea.form-control {
         </div>
 
         <div class="stat">
-          <strong id="followersCount">17,000</strong>
+          <strong id="followersCount">17K</strong>
           followers
         </div>
 
@@ -1038,22 +1046,27 @@ textarea.form-control {
   </section>
 
 
-  <!-- POSTS NAV -->
+  <!-- NAV -->
 
   <div class="posts-nav">
 
-    <button class="active">
+    <button
+      class="active"
+      type="button"
+    >
       ▦ POSTS
     </button>
 
-    <button>
+    <button
+      type="button"
+    >
       👤 PROFILE
     </button>
 
   </div>
 
 
-  <!-- POST GRID -->
+  <!-- POSTS -->
 
   <section
     class="post-grid"
@@ -1063,10 +1076,7 @@ textarea.form-control {
 </main>
 
 
-
-<!-- ==========================================
-     EDIT PROFILE MODAL
-========================================== -->
+<!-- EDIT PROFILE -->
 
 <div
   class="modal-backdrop"
@@ -1082,6 +1092,7 @@ textarea.form-control {
       <button
         class="close-btn"
         data-close="profileModal"
+        type="button"
       >×</button>
 
     </div>
@@ -1102,6 +1113,7 @@ textarea.form-control {
             id="profileName"
             maxlength="50"
             placeholder="Your name"
+            autocomplete="off"
           >
 
         </div>
@@ -1118,6 +1130,7 @@ textarea.form-control {
             id="profileUsername"
             maxlength="30"
             placeholder="username"
+            autocomplete="off"
           >
 
         </div>
@@ -1137,7 +1150,7 @@ textarea.form-control {
           ></textarea>
 
           <small style="color:var(--muted)">
-            Maximum 150 characters
+            Your bio is saved when you press Save changes.
           </small>
 
         </div>
@@ -1205,10 +1218,7 @@ textarea.form-control {
 </div>
 
 
-
-<!-- ==========================================
-     CREATE POST MODAL
-========================================== -->
+<!-- CREATE POST -->
 
 <div
   class="modal-backdrop"
@@ -1224,6 +1234,7 @@ textarea.form-control {
       <button
         class="close-btn"
         data-close="postModal"
+        type="button"
       >×</button>
 
     </div>
@@ -1289,6 +1300,7 @@ textarea.form-control {
         <button
           type="submit"
           class="btn btn-primary"
+          id="sharePostBtn"
         >
           Share
         </button>
@@ -1302,10 +1314,7 @@ textarea.form-control {
 </div>
 
 
-
-<!-- ==========================================
-     POST DETAIL MODAL
-========================================== -->
+<!-- POST DETAIL -->
 
 <div
   class="modal-backdrop"
@@ -1321,6 +1330,7 @@ textarea.form-control {
       <button
         class="close-btn"
         data-close="detailModal"
+        type="button"
       >×</button>
 
     </div>
@@ -1336,6 +1346,7 @@ textarea.form-control {
         <button
           class="carousel-arrow carousel-prev"
           id="carouselPrev"
+          type="button"
         >
           ‹
         </button>
@@ -1349,6 +1360,7 @@ textarea.form-control {
         <button
           class="carousel-arrow carousel-next"
           id="carouselNext"
+          type="button"
         >
           ›
         </button>
@@ -1392,6 +1404,7 @@ textarea.form-control {
         <button
           class="btn"
           id="likePostBtn"
+          type="button"
           style="margin-top:15px"
         >
           ♥ Like
@@ -1407,6 +1420,7 @@ textarea.form-control {
         <button
           class="btn btn-danger"
           id="deletePostBtn"
+          type="button"
           style="margin-top:15px"
         >
           Delete post
@@ -1421,7 +1435,6 @@ textarea.form-control {
 </div>
 
 
-
 <!-- TOAST -->
 
 <div
@@ -1430,136 +1443,306 @@ textarea.form-control {
 ></div>
 
 
-
 <script>
 
-/* ==================================================
-   PRIVATE PROFILE APPLICATION
-
-   Everything is stored locally in the browser.
-
-   No server.
-   No database.
-   No public profile.
-================================================== */
+/* =================================================
+   PRIVATE PROFILE APP
+   Everything is stored in localStorage.
+================================================= */
 
 
-/* ================================================
-   STORAGE KEYS
-================================================ */
+/* =================================================
+   STORAGE
+================================================= */
 
-const PROFILE_KEY =
-  "private_profile_data_v3";
-
-const POSTS_KEY =
-  "private_profile_posts_v3";
-
-const THEME_KEY =
-  "private_profile_theme_v3";
+const PROFILE_KEY = "private_profile_data_v4";
+const POSTS_KEY = "private_profile_posts_v4";
+const THEME_KEY = "private_profile_theme_v4";
 
 
-/* ================================================
+/* =================================================
    DEFAULT PROFILE
-================================================ */
+================================================= */
 
 const defaultProfile = {
-
   name: "Your Name",
-
   username: "username",
-
   bio: "Welcome to my private profile. ✨",
-
   avatar: null,
-
   followers: 17000,
-
   following: 851
-
 };
 
 
-/* ================================================
-   PROFILE STORAGE
-================================================ */
+/* =================================================
+   SAFE JSON
+================================================= */
+
+function readJSON(key) {
+
+  try {
+
+    const value = localStorage.getItem(key);
+
+    if (!value) {
+      return null;
+    }
+
+    return JSON.parse(value);
+
+  } catch (error) {
+
+    console.error(
+      "Could not read storage:",
+      error
+    );
+
+    return null;
+  }
+}
+
+
+function writeJSON(key, value) {
+
+  try {
+
+    localStorage.setItem(
+      key,
+      JSON.stringify(value)
+    );
+
+    return true;
+
+  } catch (error) {
+
+    console.error(
+      "Could not save:",
+      error
+    );
+
+    return false;
+  }
+}
+
+
+/* =================================================
+   MIGRATE OLD PROFILE DATA
+================================================= */
 
 function getProfile() {
 
-  try {
+  let saved =
+    readJSON(PROFILE_KEY);
 
-    const saved =
-      localStorage.getItem(PROFILE_KEY);
 
-    if (!saved) {
+  /*
+     If the new storage doesn't exist,
+     look for the older versions.
+  */
 
-      saveProfile(defaultProfile);
+  if (!saved) {
 
-      return {
-        ...defaultProfile
-      };
-
-    }
-
-    return {
-      ...defaultProfile,
-      ...JSON.parse(saved)
-    };
-
-  } catch {
-
-    return {
-      ...defaultProfile
-    };
+    saved =
+      readJSON(
+        "private_profile_data_v3"
+      );
 
   }
 
-}
+
+  if (!saved) {
+
+    saved = {};
+
+  }
 
 
-function saveProfile(profile) {
+  const profile = {
+    ...defaultProfile,
+    ...saved
+  };
 
-  localStorage.setItem(
+
+  /*
+     Make sure the requested numbers
+     always exist.
+  */
+
+  if (
+    typeof profile.followers !== "number"
+  ) {
+
+    profile.followers = 17000;
+
+  }
+
+
+  if (
+    typeof profile.following !== "number"
+  ) {
+
+    profile.following = 851;
+
+  }
+
+
+  /*
+     Save migrated profile immediately.
+  */
+
+  writeJSON(
     PROFILE_KEY,
-    JSON.stringify(profile)
+    profile
   );
 
+
+  return profile;
 }
 
 
-/* ================================================
-   POST STORAGE
-================================================ */
+/* =================================================
+   POSTS
+================================================= */
+
+function normalizePost(post) {
+
+  /*
+     Older version used:
+        image: "..."
+
+     New version uses:
+        images: ["...", "..."]
+  */
+
+  let images = [];
+
+  if (
+    Array.isArray(post.images)
+  ) {
+
+    images =
+      post.images.filter(Boolean);
+
+  } else if (
+    post.image
+  ) {
+
+    images = [
+      post.image
+    ];
+
+  }
+
+
+  return {
+
+    id:
+      post.id ||
+      Date.now().toString(),
+
+    images:
+
+      images,
+
+    caption:
+      post.caption ||
+      "",
+
+    likes:
+      Number.isFinite(
+        Number(post.likes)
+      )
+        ? Number(post.likes)
+        : 0,
+
+    createdAt:
+      post.createdAt ||
+      new Date().toISOString()
+
+  };
+}
+
 
 function getPosts() {
 
-  try {
+  let posts =
+    readJSON(POSTS_KEY);
 
-    return JSON.parse(
-      localStorage.getItem(POSTS_KEY)
-    ) || [];
 
-  } catch {
+  /*
+     Migrate posts from v3.
+  */
 
-    return [];
+  if (!Array.isArray(posts)) {
+
+    posts =
+      readJSON(
+        "private_profile_posts_v3"
+      );
 
   }
 
+
+  if (!Array.isArray(posts)) {
+
+    posts = [];
+
+  }
+
+
+  posts =
+    posts.map(
+      normalizePost
+    );
+
+
+  /*
+     Save normalized data.
+     This means old single-image posts
+     are converted to the new format.
+  */
+
+  writeJSON(
+    POSTS_KEY,
+    posts
+  );
+
+
+  return posts;
 }
 
 
 function savePosts(posts) {
 
-  localStorage.setItem(
-    POSTS_KEY,
-    JSON.stringify(posts)
-  );
+  const normalized =
+    posts.map(
+      normalizePost
+    );
 
+
+  const saved =
+    writeJSON(
+      POSTS_KEY,
+      normalized
+    );
+
+
+  if (!saved) {
+
+    showToast(
+      "Could not save. Your browser may be out of storage."
+    );
+
+  }
+
+
+  return saved;
 }
 
 
-/* ================================================
+/* =================================================
    ELEMENTS
-================================================ */
+================================================= */
 
 const avatarContainer =
   document.getElementById(
@@ -1607,31 +1790,99 @@ const toast =
   );
 
 
-/* ================================================
+/* =================================================
+   NUMBER FORMAT
+================================================= */
+
+function formatFollowers(number) {
+
+  number =
+    Number(number) || 0;
+
+
+  if (number >= 1000000) {
+
+    const value =
+      number / 1000000;
+
+    return (
+      value
+        .toFixed(
+          value % 1 === 0
+            ? 0
+            : 1
+        )
+      + "M"
+    );
+
+  }
+
+
+  if (number >= 1000) {
+
+    const value =
+      number / 1000;
+
+    return (
+      value
+        .toFixed(
+          value % 1 === 0
+            ? 0
+            : 1
+        )
+      + "K"
+    );
+
+  }
+
+
+  return number.toLocaleString();
+}
+
+
+/* =================================================
    RENDER PROFILE
-================================================ */
+================================================= */
 
 function renderProfile() {
 
   const profile =
     getProfile();
 
+
   usernameDisplay.textContent =
-    profile.username || "username";
+    profile.username ||
+    "username";
+
 
   nameDisplay.textContent =
-    profile.name || "Your Name";
+    profile.name ||
+    "Your Name";
+
 
   bioDisplay.textContent =
-    profile.bio || "Add a bio to your profile.";
+    profile.bio ||
+    "Add a bio to your profile.";
+
+
+  /*
+     17,000 becomes 17K.
+  */
 
   followersCount.textContent =
-    Number(profile.followers || 17000)
-      .toLocaleString();
+    formatFollowers(
+      profile.followers
+    );
+
+
+  /*
+     851 remains 851.
+  */
 
   followingCount.textContent =
-    Number(profile.following || 851)
-      .toLocaleString();
+    formatFollowers(
+      profile.following
+    );
 
 
   if (profile.avatar) {
@@ -1652,7 +1903,9 @@ function renderProfile() {
 
       <div class="avatar-placeholder">
         ${escapeHTML(
-          getInitials(profile.name)
+          getInitials(
+            profile.name
+          )
         )}
       </div>
 
@@ -1664,20 +1917,22 @@ function renderProfile() {
   const posts =
     getPosts();
 
+
   postCount.textContent =
     posts.length;
 
 }
 
 
-/* ================================================
+/* =================================================
    RENDER POSTS
-================================================ */
+================================================= */
 
 function renderPosts() {
 
   const posts =
     getPosts();
+
 
   postGrid.innerHTML = "";
 
@@ -1703,7 +1958,8 @@ function renderPosts() {
 
         <button
           class="btn btn-primary"
-          onclick="openPostModal()"
+          id="emptyAddPost"
+          type="button"
         >
           Add your first post
         </button>
@@ -1712,15 +1968,28 @@ function renderPosts() {
 
     `;
 
-    return;
 
+    document
+      .getElementById(
+        "emptyAddPost"
+      )
+      .addEventListener(
+        "click",
+        openPostModal
+      );
+
+
+    return;
   }
 
 
   posts.forEach(post => {
 
     const element =
-      document.createElement("article");
+      document.createElement(
+        "article"
+      );
+
 
     element.className =
       "post";
@@ -1729,156 +1998,231 @@ function renderPosts() {
     const images =
       Array.isArray(post.images)
         ? post.images
-        : [post.image];
+        : [];
 
 
     const firstImage =
       images[0];
 
 
-    element.innerHTML = `
+    if (firstImage) {
 
-      ${
-        firstImage
-
-          ? `
-
-            <img
-              src="${firstImage}"
-              alt="${escapeHTML(
-                post.caption || "Post"
-              )}"
-              loading="lazy"
-            >
-
-          `
-
-          : `
-
-            <div class="text-post">
-              ${escapeHTML(
-                post.caption || ""
-              )}
-            </div>
-
-          `
-      }
+      const image =
+        document.createElement(
+          "img"
+        );
 
 
-      ${
-        images.length > 1
+      image.src =
+        firstImage;
 
-          ? `
+      image.alt =
+        post.caption ||
+        "Post";
 
-            <div class="post-multiple">
-              ▧
-            </div>
-
-          `
-
-          : ""
-      }
+      image.loading =
+        "lazy";
 
 
-      <div class="post-overlay">
+      element.appendChild(
+        image
+      );
 
-        <span>
-          ♥ ${post.likes || 0}
-        </span>
+    } else {
 
-        <span>
-          ${
-            images.length > 1
-              ? `📷 ${images.length}`
-              : "📷"
-          }
-        </span>
+      const text =
+        document.createElement(
+          "div"
+        );
 
-      </div>
+
+      text.className =
+        "text-post";
+
+
+      text.textContent =
+        post.caption ||
+        "Post";
+
+
+      element.appendChild(
+        text
+      );
+
+    }
+
+
+    if (
+      images.length > 1
+    ) {
+
+      const multiple =
+        document.createElement(
+          "div"
+        );
+
+
+      multiple.className =
+        "post-multiple";
+
+
+      multiple.textContent =
+        "▧";
+
+
+      element.appendChild(
+        multiple
+      );
+
+    }
+
+
+    const overlay =
+      document.createElement(
+        "div"
+      );
+
+
+    overlay.className =
+      "post-overlay";
+
+
+    overlay.innerHTML = `
+
+      <span>
+        ♥ ${post.likes}
+      </span>
+
+      <span>
+        ${
+          images.length > 1
+            ? "📷 " + images.length
+            : "📷"
+        }
+      </span>
 
     `;
 
 
-    element.addEventListener(
-      "click",
-      () => openPostDetail(post.id)
+    element.appendChild(
+      overlay
     );
 
 
-    postGrid.appendChild(element);
+    element.addEventListener(
+      "click",
+      () => {
+        openPostDetail(
+          post.id
+        );
+      }
+    );
+
+
+    postGrid.appendChild(
+      element
+    );
 
   });
 
 }
 
 
-/* ================================================
-   PROFILE EDITING
-================================================ */
+/* =================================================
+   RENDER EVERYTHING
+================================================= */
 
-document
-  .getElementById("editProfileBtn")
-  .addEventListener("click", () => {
+function render() {
 
-    const profile =
-      getProfile();
+  renderProfile();
 
+  renderPosts();
 
-    document.getElementById(
-      "profileName"
-    ).value =
-      profile.name || "";
+}
 
 
-    document.getElementById(
-      "profileUsername"
-    ).value =
-      profile.username || "";
-
-
-    document.getElementById(
-      "profileBio"
-    ).value =
-      profile.bio || "";
-
-
-    newAvatar = null;
-
-
-    if (profile.avatar) {
-
-      document.getElementById(
-        "profilePreviewImage"
-      ).src =
-        profile.avatar;
-
-      document.getElementById(
-        "profilePreview"
-      ).classList.add("show");
-
-    } else {
-
-      document.getElementById(
-        "profilePreview"
-      ).classList.remove("show");
-
-    }
-
-
-    openModal("profileModal");
-
-  });
-
-
-/* ================================================
-   PROFILE IMAGE
-================================================ */
+/* =================================================
+   PROFILE EDIT
+================================================= */
 
 let newAvatar = null;
 
 
 document
-  .getElementById("profileImage")
+  .getElementById(
+    "editProfileBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      const profile =
+        getProfile();
+
+
+      document.getElementById(
+        "profileName"
+      ).value =
+        profile.name || "";
+
+
+      document.getElementById(
+        "profileUsername"
+      ).value =
+        profile.username || "";
+
+
+      document.getElementById(
+        "profileBio"
+      ).value =
+        profile.bio || "";
+
+
+      newAvatar = null;
+
+
+      const preview =
+        document.getElementById(
+          "profilePreview"
+        );
+
+
+      if (profile.avatar) {
+
+        document.getElementById(
+          "profilePreviewImage"
+        ).src =
+          profile.avatar;
+
+        preview.classList.add(
+          "show"
+        );
+
+      } else {
+
+        preview.classList.remove(
+          "show"
+        );
+
+      }
+
+
+      openModal(
+        "profileModal"
+      );
+
+    }
+  );
+
+
+/* =================================================
+   PROFILE IMAGE
+================================================= */
+
+document
+  .getElementById(
+    "profileImage"
+  )
   .addEventListener(
     "change",
     function() {
@@ -1886,12 +2230,16 @@ document
       const file =
         this.files[0];
 
-      if (!file) return;
+
+      if (!file)
+        return;
 
 
       resizeImage(
         file,
-        600,
+        600
+      )
+      .then(
         dataURL => {
 
           newAvatar =
@@ -1911,18 +2259,33 @@ document
           );
 
         }
+      )
+      .catch(
+        error => {
+
+          console.error(
+            error
+          );
+
+          showToast(
+            "Could not load that picture."
+          );
+
+        }
       );
 
     }
   );
 
 
-/* ================================================
+/* =================================================
    SAVE PROFILE
-================================================ */
+================================================= */
 
 document
-  .getElementById("profileForm")
+  .getElementById(
+    "profileForm"
+  )
   .addEventListener(
     "submit",
     event => {
@@ -1934,31 +2297,57 @@ document
         getProfile();
 
 
-      profile.name =
+      const name =
         document.getElementById(
           "profileName"
-        ).value.trim()
-        || "Your Name";
+        ).value.trim();
 
 
-      profile.username =
+      const username =
         document.getElementById(
           "profileUsername"
         ).value
         .trim()
-        .replace(/\s+/g, "")
-        .replace(/^@/, "")
-        .toLowerCase()
-        || "username";
+        .replace(
+          /\s+/g,
+          ""
+        )
+        .replace(
+          /^@/,
+          ""
+        )
+        .toLowerCase();
+
+
+      const bio =
+        document.getElementById(
+          "profileBio"
+        ).value;
+
+
+      /*
+         IMPORTANT:
+         Save the bio exactly as entered,
+         including line breaks.
+      */
+
+      profile.name =
+        name ||
+        "Your Name";
+
+
+      profile.username =
+        username ||
+        "username";
 
 
       profile.bio =
-        document.getElementById(
-          "profileBio"
-        ).value.trim();
+        bio;
 
 
-      if (newAvatar !== null) {
+      if (
+        newAvatar !== null
+      ) {
 
         profile.avatar =
           newAvatar;
@@ -1966,7 +2355,22 @@ document
       }
 
 
-      saveProfile(profile);
+      const saved =
+        writeJSON(
+          PROFILE_KEY,
+          profile
+        );
+
+
+      if (!saved) {
+
+        showToast(
+          "Could not save your profile."
+        );
+
+        return;
+
+      }
 
 
       newAvatar = null;
@@ -1988,15 +2392,17 @@ document
   );
 
 
-/* ================================================
+/* =================================================
    CREATE POST
-================================================ */
+================================================= */
 
 let selectedPostImages = [];
 
 
 document
-  .getElementById("addPostBtn")
+  .getElementById(
+    "addPostBtn"
+  )
   .addEventListener(
     "click",
     openPostModal
@@ -2004,7 +2410,9 @@ document
 
 
 document
-  .getElementById("addPostTop")
+  .getElementById(
+    "addPostTop"
+  )
   .addEventListener(
     "click",
     openPostModal
@@ -2017,7 +2425,9 @@ function openPostModal() {
 
 
   document
-    .getElementById("postForm")
+    .getElementById(
+      "postForm"
+    )
     .reset();
 
 
@@ -2026,70 +2436,116 @@ function openPostModal() {
   ).innerHTML = "";
 
 
-  openModal("postModal");
+  openModal(
+    "postModal"
+  );
 
 }
 
 
-/* ================================================
-   MULTIPLE POST IMAGE SELECTION
-================================================ */
+/* =================================================
+   MULTIPLE IMAGE SELECTION
+================================================= */
 
 document
-  .getElementById("postImage")
+  .getElementById(
+    "postImage"
+  )
   .addEventListener(
     "change",
-    function() {
+    async function() {
 
       const files =
-        Array.from(this.files);
-
-
-      if (!files.length) return;
-
-
-      selectedPostImages = [];
-
-
-      let loaded =
-        0;
-
-
-      files.forEach(file => {
-
-        resizeImage(
-          file,
-          1400,
-          dataURL => {
-
-            selectedPostImages.push(
-              dataURL
-            );
-
-
-            loaded++;
-
-
-            if (
-              loaded === files.length
-            ) {
-
-              renderPostPreview();
-
-            }
-
-          }
+        Array.from(
+          this.files
         );
 
-      });
+
+      if (!files.length)
+        return;
+
+
+      const preview =
+        document.getElementById(
+          "postPreview"
+        );
+
+
+      preview.innerHTML = "";
+
+
+      selectedPostImages =
+        [];
+
+
+      const shareButton =
+        document.getElementById(
+          "sharePostBtn"
+        );
+
+
+      shareButton.disabled =
+        true;
+
+
+      shareButton.textContent =
+        "Loading pictures...";
+
+
+      try {
+
+        /*
+           Promise.all keeps the
+           selected image order.
+        */
+
+        selectedPostImages =
+          await Promise.all(
+            files.map(
+              file =>
+                resizeImage(
+                  file,
+                  1400
+                )
+            )
+          );
+
+
+        renderPostPreview();
+
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+
+        selectedPostImages =
+          [];
+
+
+        showToast(
+          "One of the pictures could not be loaded."
+        );
+
+      }
+
+
+      shareButton.disabled =
+        false;
+
+
+      shareButton.textContent =
+        "Share";
 
     }
   );
 
 
-/* ================================================
-   PREVIEW MULTIPLE IMAGES
-================================================ */
+/* =================================================
+   PREVIEW
+================================================= */
 
 function renderPostPreview() {
 
@@ -2106,15 +2562,22 @@ function renderPostPreview() {
     (image, index) => {
 
       const img =
-        document.createElement("img");
+        document.createElement(
+          "img"
+        );
+
 
       img.src =
         image;
 
+
       img.alt =
         `Selected image ${index + 1}`;
 
-      preview.appendChild(img);
+
+      preview.appendChild(
+        img
+      );
 
     }
   );
@@ -2122,12 +2585,14 @@ function renderPostPreview() {
 }
 
 
-/* ================================================
-   CREATE POST
-================================================ */
+/* =================================================
+   SHARE POST
+================================================= */
 
 document
-  .getElementById("postForm")
+  .getElementById(
+    "postForm"
+  )
   .addEventListener(
     "submit",
     event => {
@@ -2151,20 +2616,20 @@ document
       const caption =
         document.getElementById(
           "postCaption"
-        ).value.trim();
+        ).value;
 
 
-      const posts =
-        getPosts();
-
-
-      const newPost = {
+      const post = {
 
         id:
-          Date.now().toString(),
+          Date.now().toString()
+          + "-"
+          + Math.random()
+            .toString(36)
+            .slice(2),
 
         images:
-          selectedPostImages,
+          [...selectedPostImages],
 
         caption:
           caption,
@@ -2178,27 +2643,46 @@ document
       };
 
 
+      const posts =
+        getPosts();
+
+
       posts.unshift(
-        newPost
+        post
       );
 
 
-      try {
+      /*
+         SAVE FIRST.
+         Only close the window if
+         saving actually succeeded.
+      */
 
-        savePosts(posts);
-
-      } catch {
-
-        showToast(
-          "Not enough browser storage. Try fewer or smaller pictures."
+      const saved =
+        savePosts(
+          posts
         );
+
+
+      if (!saved) {
 
         return;
 
       }
 
 
-      selectedPostImages = [];
+      /*
+         Clear the temporary
+         selected images.
+      */
+
+      selectedPostImages =
+        [];
+
+
+      document.getElementById(
+        "postPreview"
+      ).innerHTML = "";
 
 
       closeModal(
@@ -2206,31 +2690,30 @@ document
       );
 
 
+      /*
+         Immediately redraw the
+         profile and post grid.
+      */
+
       render();
 
 
       showToast(
-        "Post added!"
+        "Post shared!"
       );
 
     }
   );
 
 
-/* ================================================
-   POST DETAIL STATE
-================================================ */
+/* =================================================
+   POST DETAIL
+================================================= */
 
 let selectedPostId = null;
-
 let currentPostImages = [];
-
 let currentImageIndex = 0;
 
-
-/* ================================================
-   OPEN POST
-================================================ */
 
 function openPostDetail(id) {
 
@@ -2240,11 +2723,13 @@ function openPostDetail(id) {
 
   const post =
     posts.find(
-      p => p.id === id
+      item =>
+        item.id === id
     );
 
 
-  if (!post) return;
+  if (!post)
+    return;
 
 
   selectedPostId =
@@ -2252,35 +2737,41 @@ function openPostDetail(id) {
 
 
   currentPostImages =
-    Array.isArray(post.images)
+    Array.isArray(
+      post.images
+    )
       ? post.images
-      : [post.image];
+      : [];
 
 
   currentImageIndex =
     0;
 
 
+  const profile =
+    getProfile();
+
+
   document.getElementById(
     "detailUsername"
   ).textContent =
-    "@" + getProfile().username;
+    "@" +
+    (
+      profile.username ||
+      "username"
+    );
 
 
   document.getElementById(
     "detailCaption"
   ).textContent =
-    post.caption || "";
+    post.caption ||
+    "";
 
 
-  document.getElementById(
-    "detailLikes"
-  ).textContent =
-    `♥ ${post.likes || 0} ${
-      (post.likes || 0) === 1
-        ? "like"
-        : "likes"
-    }`;
+  updateDetailLikes(
+    post
+  );
 
 
   document.getElementById(
@@ -2301,9 +2792,9 @@ function openPostDetail(id) {
 }
 
 
-/* ================================================
+/* =================================================
    CAROUSEL
-================================================ */
+================================================= */
 
 function renderCarousel() {
 
@@ -2311,16 +2802,25 @@ function renderCarousel() {
     currentPostImages.length;
 
 
-  const image =
-    currentPostImages[
-      currentImageIndex
-    ];
+  if (!total) {
+
+    document.getElementById(
+      "detailImage"
+    ).removeAttribute(
+      "src"
+    );
+
+    return;
+
+  }
 
 
   document.getElementById(
     "detailImage"
   ).src =
-    image;
+    currentPostImages[
+      currentImageIndex
+    ];
 
 
   document.getElementById(
@@ -2329,7 +2829,7 @@ function renderCarousel() {
     `${currentImageIndex + 1} / ${total}`;
 
 
-  const prev =
+  const previous =
     document.getElementById(
       "carouselPrev"
     );
@@ -2340,7 +2840,7 @@ function renderCarousel() {
     );
 
 
-  prev.style.display =
+  previous.style.display =
     total > 1
       ? "block"
       : "none";
@@ -2388,7 +2888,9 @@ function renderCarousel() {
         }
 
 
-        dots.appendChild(dot);
+        dots.appendChild(
+          dot
+        );
 
       }
     );
@@ -2398,12 +2900,14 @@ function renderCarousel() {
 }
 
 
-/* ================================================
-   CAROUSEL NEXT / PREVIOUS
-================================================ */
+/* =================================================
+   NEXT / PREVIOUS
+================================================= */
 
 document
-  .getElementById("carouselNext")
+  .getElementById(
+    "carouselNext"
+  )
   .addEventListener(
     "click",
     event => {
@@ -2413,7 +2917,8 @@ document
 
       if (
         currentPostImages.length <= 1
-      ) return;
+      )
+        return;
 
 
       currentImageIndex =
@@ -2430,7 +2935,9 @@ document
 
 
 document
-  .getElementById("carouselPrev")
+  .getElementById(
+    "carouselPrev"
+  )
   .addEventListener(
     "click",
     event => {
@@ -2440,12 +2947,14 @@ document
 
       if (
         currentPostImages.length <= 1
-      ) return;
+      )
+        return;
 
 
       currentImageIndex =
         (
-          currentImageIndex - 1 +
+          currentImageIndex -
+          1 +
           currentPostImages.length
         ) %
         currentPostImages.length;
@@ -2457,39 +2966,48 @@ document
   );
 
 
-/* ================================================
-   KEYBOARD CAROUSEL
-================================================ */
+/* =================================================
+   KEYBOARD
+================================================= */
 
 document.addEventListener(
   "keydown",
   event => {
 
+    const modal =
+      document.getElementById(
+        "detailModal"
+      );
+
+
     if (
-      !document
-        .getElementById("detailModal")
-        .classList.contains("show")
-    ) return;
+      !modal.classList.contains(
+        "show"
+      )
+    )
+      return;
 
 
-    if (event.key === "ArrowRight") {
+    if (
+      event.key ===
+      "ArrowRight"
+    ) {
 
-      document
-        .getElementById(
-          "carouselNext"
-        )
-        .click();
+      document.getElementById(
+        "carouselNext"
+      ).click();
 
     }
 
 
-    if (event.key === "ArrowLeft") {
+    if (
+      event.key ===
+      "ArrowLeft"
+    ) {
 
-      document
-        .getElementById(
-          "carouselPrev"
-        )
-        .click();
+      document.getElementById(
+        "carouselPrev"
+      ).click();
 
     }
 
@@ -2497,77 +3015,86 @@ document.addEventListener(
 );
 
 
-/* ================================================
-   SWIPE SUPPORT
-================================================ */
+/* =================================================
+   SWIPE
+================================================= */
 
 let touchStartX = 0;
 
 
-const carousel =
+const postCarousel =
   document.getElementById(
     "postCarousel"
   );
 
 
-carousel.addEventListener(
+postCarousel.addEventListener(
   "touchstart",
   event => {
 
     touchStartX =
-      event.changedTouches[0].screenX;
+      event.changedTouches[0]
+        .screenX;
 
   },
-  { passive: true }
+  {
+    passive: true
+  }
 );
 
 
-carousel.addEventListener(
+postCarousel.addEventListener(
   "touchend",
   event => {
 
     const touchEndX =
-      event.changedTouches[0].screenX;
+      event.changedTouches[0]
+        .screenX;
 
 
     const difference =
-      touchStartX - touchEndX;
+      touchStartX -
+      touchEndX;
 
 
     if (
-      Math.abs(difference) < 40
-    ) return;
+      Math.abs(difference) <
+      40
+    )
+      return;
 
 
-    if (difference > 0) {
+    if (
+      difference > 0
+    ) {
 
-      document
-        .getElementById(
-          "carouselNext"
-        )
-        .click();
+      document.getElementById(
+        "carouselNext"
+      ).click();
 
     } else {
 
-      document
-        .getElementById(
-          "carouselPrev"
-        )
-        .click();
+      document.getElementById(
+        "carouselPrev"
+      ).click();
 
     }
 
   },
-  { passive: true }
+  {
+    passive: true
+  }
 );
 
 
-/* ================================================
-   LIKE POST
-================================================ */
+/* =================================================
+   LIKE
+================================================= */
 
 document
-  .getElementById("likePostBtn")
+  .getElementById(
+    "likePostBtn"
+  )
   .addEventListener(
     "click",
     () => {
@@ -2582,28 +3109,33 @@ document
 
       const post =
         posts.find(
-          p => p.id === selectedPostId
+          item =>
+            item.id ===
+            selectedPostId
         );
 
 
-      if (!post) return;
+      if (!post)
+        return;
 
 
       post.likes =
         (post.likes || 0) + 1;
 
 
-      savePosts(posts);
+      const saved =
+        savePosts(
+          posts
+        );
 
 
-      document.getElementById(
-        "detailLikes"
-      ).textContent =
-        `♥ ${post.likes} ${
-          post.likes === 1
-            ? "like"
-            : "likes"
-        }`;
+      if (!saved)
+        return;
+
+
+      updateDetailLikes(
+        post
+      );
 
 
       render();
@@ -2617,12 +3149,34 @@ document
   );
 
 
-/* ================================================
+function updateDetailLikes(
+  post
+) {
+
+  const likes =
+    Number(post.likes) || 0;
+
+
+  document.getElementById(
+    "detailLikes"
+  ).textContent =
+    `♥ ${likes} ${
+      likes === 1
+        ? "like"
+        : "likes"
+    }`;
+
+}
+
+
+/* =================================================
    DELETE POST
-================================================ */
+================================================= */
 
 document
-  .getElementById("deletePostBtn")
+  .getElementById(
+    "deletePostBtn"
+  )
   .addEventListener(
     "click",
     () => {
@@ -2641,11 +3195,11 @@ document
         return;
 
 
-      let posts =
+      const posts =
         getPosts();
 
 
-      posts =
+      const remaining =
         posts.filter(
           post =>
             post.id !==
@@ -2653,7 +3207,14 @@ document
         );
 
 
-      savePosts(posts);
+      const saved =
+        savePosts(
+          remaining
+        );
+
+
+      if (!saved)
+        return;
 
 
       selectedPostId =
@@ -2680,15 +3241,17 @@ document
   );
 
 
-/* ================================================
-   MODAL FUNCTIONS
-================================================ */
+/* =================================================
+   MODALS
+================================================= */
 
 function openModal(id) {
 
   document
     .getElementById(id)
-    .classList.add("show");
+    .classList.add(
+      "show"
+    );
 
 
   document.body.style.overflow =
@@ -2701,7 +3264,9 @@ function closeModal(id) {
 
   document
     .getElementById(id)
-    .classList.remove("show");
+    .classList.remove(
+      "show"
+    );
 
 
   document.body.style.overflow =
@@ -2711,46 +3276,54 @@ function closeModal(id) {
 
 
 document
-  .querySelectorAll("[data-close]")
-  .forEach(button => {
+  .querySelectorAll(
+    "[data-close]"
+  )
+  .forEach(
+    button => {
 
-    button.addEventListener(
-      "click",
-      () => {
-
-        closeModal(
-          button.dataset.close
-        );
-
-      }
-    );
-
-  });
-
-
-document
-  .querySelectorAll(".modal-backdrop")
-  .forEach(backdrop => {
-
-    backdrop.addEventListener(
-      "click",
-      event => {
-
-        if (
-          event.target ===
-          backdrop
-        ) {
+      button.addEventListener(
+        "click",
+        () => {
 
           closeModal(
-            backdrop.id
+            button.dataset.close
           );
 
         }
+      );
 
-      }
-    );
+    }
+  );
 
-  });
+
+document
+  .querySelectorAll(
+    ".modal-backdrop"
+  )
+  .forEach(
+    backdrop => {
+
+      backdrop.addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target ===
+            backdrop
+          ) {
+
+            closeModal(
+              backdrop.id
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
 
 
 document.addEventListener(
@@ -2758,29 +3331,33 @@ document.addEventListener(
   event => {
 
     if (
-      event.key !== "Escape"
-    ) return;
+      event.key !==
+      "Escape"
+    )
+      return;
 
 
     document
       .querySelectorAll(
         ".modal-backdrop.show"
       )
-      .forEach(modal => {
+      .forEach(
+        modal => {
 
-        closeModal(
-          modal.id
-        );
+          closeModal(
+            modal.id
+          );
 
-      });
+        }
+      );
 
   }
 );
 
 
-/* ================================================
+/* =================================================
    THEME
-================================================ */
+================================================= */
 
 const themeToggle =
   document.getElementById(
@@ -2790,13 +3367,29 @@ const themeToggle =
 
 function loadTheme() {
 
-  const saved =
+  let saved =
     localStorage.getItem(
       THEME_KEY
     );
 
 
-  if (saved === "dark") {
+  /*
+     Migrate old theme.
+  */
+
+  if (!saved) {
+
+    saved =
+      localStorage.getItem(
+        "private_profile_theme_v3"
+      );
+
+  }
+
+
+  if (
+    saved === "dark"
+  ) {
 
     document.body.classList.add(
       "dark"
@@ -2824,7 +3417,7 @@ themeToggle.addEventListener(
     );
 
 
-    const dark =
+    const isDark =
       document.body.classList.contains(
         "dark"
       );
@@ -2832,14 +3425,14 @@ themeToggle.addEventListener(
 
     localStorage.setItem(
       THEME_KEY,
-      dark
+      isDark
         ? "dark"
         : "light"
     );
 
 
     themeToggle.textContent =
-      dark
+      isDark
         ? "☀"
         : "☾";
 
@@ -2847,124 +3440,167 @@ themeToggle.addEventListener(
 );
 
 
-/* ================================================
+/* =================================================
    IMAGE RESIZER
-================================================ */
+================================================= */
 
 function resizeImage(
   file,
-  maxSize,
-  callback
+  maxSize
 ) {
 
-  if (
-    !file.type.startsWith(
-      "image/"
-    )
-  ) {
+  return new Promise(
+    (
+      resolve,
+      reject
+    ) => {
 
-    showToast(
-      "Please choose an image."
-    );
+      if (
+        !file ||
+        !file.type.startsWith(
+          "image/"
+        )
+      ) {
 
-    return;
+        reject(
+          new Error(
+            "Not an image"
+          )
+        );
 
-  }
+        return;
 
-
-  const reader =
-    new FileReader();
-
-
-  reader.onload =
-    event => {
-
-      const img =
-        new Image();
+      }
 
 
-      img.onload =
+      const reader =
+        new FileReader();
+
+
+      reader.onerror =
         () => {
 
-          let width =
-            img.width;
-
-          let height =
-            img.height;
-
-
-          if (
-            width > maxSize ||
-            height > maxSize
-          ) {
-
-            const scale =
-              Math.min(
-                maxSize / width,
-                maxSize / height
-              );
-
-
-            width *= scale;
-            height *= scale;
-
-          }
-
-
-          const canvas =
-            document.createElement(
-              "canvas"
-            );
-
-
-          canvas.width =
-            Math.round(width);
-
-          canvas.height =
-            Math.round(height);
-
-
-          const context =
-            canvas.getContext(
-              "2d"
-            );
-
-
-          context.drawImage(
-            img,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-          );
-
-
-          callback(
-            canvas.toDataURL(
-              "image/jpeg",
-              0.82
+          reject(
+            new Error(
+              "Could not read file"
             )
           );
 
         };
 
 
-      img.src =
-        event.target.result;
+      reader.onload =
+        event => {
 
-    };
+          const img =
+            new Image();
 
 
-  reader.readAsDataURL(
-    file
+          img.onerror =
+            () => {
+
+              reject(
+                new Error(
+                  "Could not load image"
+                )
+              );
+
+            };
+
+
+          img.onload =
+            () => {
+
+              let width =
+                img.width;
+
+              let height =
+                img.height;
+
+
+              if (
+                width > maxSize ||
+                height > maxSize
+              ) {
+
+                const scale =
+                  Math.min(
+                    maxSize / width,
+                    maxSize / height
+                  );
+
+
+                width =
+                  Math.round(
+                    width * scale
+                  );
+
+
+                height =
+                  Math.round(
+                    height * scale
+                  );
+
+              }
+
+
+              const canvas =
+                document.createElement(
+                  "canvas"
+                );
+
+
+              canvas.width =
+                width;
+
+              canvas.height =
+                height;
+
+
+              const context =
+                canvas.getContext(
+                  "2d"
+                );
+
+
+              context.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+              );
+
+
+              resolve(
+                canvas.toDataURL(
+                  "image/jpeg",
+                  0.82
+                )
+              );
+
+            };
+
+
+          img.src =
+            event.target.result;
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
   );
 
 }
 
 
-/* ================================================
+/* =================================================
    HELPERS
-================================================ */
+================================================= */
 
 function getInitials(name) {
 
@@ -2983,7 +3619,10 @@ function getInitials(name) {
   ) {
 
     return parts[0]
-      .substring(0, 2)
+      .substring(
+        0,
+        2
+      )
       .toUpperCase();
 
   }
@@ -2991,7 +3630,9 @@ function getInitials(name) {
 
   return (
     parts[0][0] +
-    parts[parts.length - 1][0]
+    parts[
+      parts.length - 1
+    ][0]
   ).toUpperCase();
 
 }
@@ -3026,9 +3667,23 @@ function escapeHTML(value) {
 
 function formatDate(date) {
 
-  return new Date(
-    date
-  ).toLocaleDateString(
+  if (!date)
+    return "";
+
+
+  const parsed =
+    new Date(date);
+
+
+  if (
+    Number.isNaN(
+      parsed.getTime()
+    )
+  )
+    return "";
+
+
+  return parsed.toLocaleDateString(
     undefined,
     {
       year: "numeric",
@@ -3038,6 +3693,9 @@ function formatDate(date) {
   );
 
 }
+
+
+let toastTimer;
 
 
 function showToast(message) {
@@ -3051,32 +3709,39 @@ function showToast(message) {
   );
 
 
-  setTimeout(
-    () => {
-
-      toast.classList.remove(
-        "show"
-      );
-
-    },
-    2500
+  clearTimeout(
+    toastTimer
   );
+
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2500
+    );
 
 }
 
 
-/* ================================================
-   START
-================================================ */
+/* =================================================
+   START APP
+================================================= */
 
 loadTheme();
 
-renderProfile();
+getProfile();
 
-renderPosts();
+getPosts();
+
+render();
 
 </script>
 
 </body>
 </html>
-```
