@@ -1194,6 +1194,13 @@ textarea.form-control {
     border-radius: 0;
   }
 }
+
+/* Like button heart animation */
+.like-burst{position:absolute;left:50%;top:50%;pointer-events:none;font-size:72px;line-height:1;transform:translate(-50%,-50%) scale(.2);opacity:0;z-index:50;animation:likeHeartBurst .8s cubic-bezier(.17,.67,.3,1.35) forwards;filter:drop-shadow(0 4px 12px rgba(0,0,0,.18))}
+@keyframes likeHeartBurst{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}18%{transform:translate(-50%,-50%) scale(1.25);opacity:1}42%{transform:translate(-50%,-50%) scale(.95);opacity:1}100%{transform:translate(-50%,-50%) scale(1.35);opacity:0}}
+.like-button-pop{animation:likeButtonPop .35s ease-out}
+@keyframes likeButtonPop{0%{transform:scale(1)}45%{transform:scale(1.3)}100%{transform:scale(1)}}
+
 </style>
 </head>
 
@@ -4193,6 +4200,28 @@ function openPostDetail(
    CAROUSEL
 ================================================= */
 
+function showLikeAnimation(target) {
+
+  if (!target) return;
+
+  const container = target.closest(".post-detail") || target.closest(".post-card") || target.parentElement;
+  if (!container) return;
+
+  if (getComputedStyle(container).position === "static") container.style.position = "relative";
+
+  const heart = document.createElement("div");
+  heart.className = "like-burst";
+  heart.textContent = "💕";
+  container.appendChild(heart);
+
+  target.classList.remove("like-button-pop");
+  void target.offsetWidth;
+  target.classList.add("like-button-pop");
+
+  setTimeout(() => { heart.remove(); target.classList.remove("like-button-pop"); }, 850);
+
+}
+
 function renderCarousel() {
 
   const total =
@@ -4380,6 +4409,8 @@ document
 
       post.likes =
         (post.likes || 0) + 1000;
+
+      showLikeAnimation(window.event && window.event.currentTarget);
 
 
       if (
