@@ -1201,6 +1201,96 @@ textarea.form-control {
 .like-button-pop{animation:likeButtonPop .35s ease-out}
 @keyframes likeButtonPop{0%{transform:scale(1)}45%{transform:scale(1.3)}100%{transform:scale(1)}}
 
+
+/* Instagram-style active story ring */
+.profile-story-ring { position: relative; display: inline-flex; align-items: center; justify-content: center; padding: 3px; border-radius: 50%; background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7); box-sizing: border-box; }
+.profile-story-ring > * { border-radius: 50%; }
+.profile-story-ring::after { content: ""; position: absolute; inset: 3px; border: 3px solid var(--bg, #fff); border-radius: 50%; pointer-events: none; }
+
+
+/* =================================================
+   COMMENTS
+================================================= */
+
+.comments-section {
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.comments-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.comment-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-user {
+  font-weight: 700;
+  margin-right: 5px;
+}
+
+.comment-text {
+  overflow-wrap: anywhere;
+}
+
+.comment-delete {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  opacity: .65;
+  font-size: 14px;
+}
+
+.comment-delete:hover {
+  opacity: 1;
+}
+
+.comment-empty {
+  opacity: .6;
+  font-size: 14px;
+  padding: 4px 0 8px;
+}
+
+.comment-form {
+  display: flex;
+  gap: 8px;
+}
+
+.comment-form input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--input-bg, transparent);
+  color: inherit;
+  padding: 10px 14px;
+  outline: none;
+}
+
+.comment-form input:focus {
+  border-color: var(--accent);
+}
+
 </style>
 </head>
 
@@ -1841,6 +1931,42 @@ textarea.form-control {
         </button>
 
 
+        <div class="comments-section">
+
+          <div class="comments-title" id="commentsTitle">
+            Comments
+          </div>
+
+          <div
+            class="comments-list"
+            id="commentsList"
+          ></div>
+
+          <form
+            id="commentForm"
+            class="comment-form"
+          >
+
+            <input
+              id="commentInput"
+              type="text"
+              maxlength="300"
+              placeholder="Add a comment..."
+              autocomplete="off"
+            >
+
+            <button
+              class="btn btn-primary"
+              type="submit"
+            >
+              Post
+            </button>
+
+          </form>
+
+        </div>
+
+
         <div
           class="post-detail-date"
           id="detailDate"
@@ -1960,6 +2086,34 @@ textarea.form-control {
 
 
 <script>
+function profileHasActiveStory() {
+  try {
+    const stories = JSON.parse(localStorage.getItem(STORIES_KEY) || "[]");
+    const now = Date.now();
+    return stories.some(story => {
+      const createdAt = Number(story.createdAt || story.timestamp || 0);
+      return createdAt && (now - createdAt) < 24 * 60 * 60 * 1000;
+    });
+  } catch (error) { return false; }
+}
+
+function updateProfileStoryRing() {
+  const hasStory = profileHasActiveStory();
+  document.querySelectorAll('.avatar, .avatar-placeholder, .profile-avatar, .profile-picture, [data-profile-avatar]').forEach(avatar => {
+    const parent = avatar.parentElement;
+    const ring = parent && parent.classList.contains('profile-story-ring') ? parent : null;
+    if (hasStory && !ring) {
+      const wrapper = document.createElement('span');
+      wrapper.className = 'profile-story-ring';
+      avatar.parentNode.insertBefore(wrapper, avatar);
+      wrapper.appendChild(avatar);
+    } else if (!hasStory && ring) {
+      ring.parentNode.insertBefore(avatar, ring);
+      ring.remove();
+    }
+  });
+}
+
 
 /* =================================================
    STORAGE
@@ -2191,6 +2345,11 @@ function normalizePost(post) {
       )
         ? Number(post.views)
         : randomPostViews(),
+
+    comments:
+      Array.isArray(post.comments)
+        ? post.comments
+        : [],
 
     createdAt:
       post.createdAt ||
@@ -3311,6 +3470,9 @@ document
         views:
           randomPostViews(),
 
+        comments:
+          [],
+
         createdAt:
           new Date().toISOString()
 
@@ -3600,6 +3762,7 @@ document
 
 
       renderStories();
+      updateProfileStoryRing();
 
 
       showToast(
@@ -4058,6 +4221,7 @@ document
 
 
       renderStories();
+      updateProfileStoryRing();
 
 
       showToast(
@@ -4176,6 +4340,8 @@ function openPostDetail(
   updateDetailLikes(
     post
   );
+
+  renderComments(post);
 
 
   document.getElementById(
@@ -4457,6 +4623,168 @@ function updateDetailLikes(
     } · 👁 ${formatCount(views)} views`;
 
 }
+
+
+/* =================================================
+   COMMENTS
+================================================= */
+
+function renderComments(post) {
+
+  const list =
+    document.getElementById("commentsList");
+
+  const title =
+    document.getElementById("commentsTitle");
+
+  if (!list || !title)
+    return;
+
+  const comments =
+    Array.isArray(post.comments)
+      ? post.comments
+      : [];
+
+  title.textContent =
+    comments.length === 1
+      ? "1 Comment"
+      : `${comments.length} Comments`;
+
+  list.innerHTML = "";
+
+  if (!comments.length) {
+
+    list.innerHTML = `
+      <div class="comment-empty">
+        No comments yet. Be the first to comment.
+      </div>
+    `;
+
+    return;
+  }
+
+  const profile = getProfile();
+  const username =
+    profile.username || "username";
+
+  comments.forEach(comment => {
+
+    const item =
+      document.createElement("div");
+
+    item.className = "comment-item";
+
+    const content =
+      document.createElement("div");
+
+    content.className = "comment-content";
+
+    const user =
+      document.createElement("span");
+
+    user.className = "comment-user";
+    user.textContent = "@" + (comment.username || username);
+
+    const text =
+      document.createElement("span");
+
+    text.className = "comment-text";
+    text.textContent = comment.text || "";
+
+    content.appendChild(user);
+    content.appendChild(text);
+
+    const deleteButton =
+      document.createElement("button");
+
+    deleteButton.className = "comment-delete";
+    deleteButton.type = "button";
+    deleteButton.title = "Delete comment";
+    deleteButton.textContent = "×";
+
+    deleteButton.addEventListener("click", () => {
+
+      const posts = getPosts();
+      const current = posts.find(
+        item => item.id === selectedPostId
+      );
+
+      if (!current) return;
+
+      current.comments =
+        (current.comments || []).filter(
+          item => item.id !== comment.id
+        );
+
+      if (!savePosts(posts))
+        return;
+
+      renderComments(current);
+      render();
+      showToast("Comment deleted.");
+
+    });
+
+    item.appendChild(content);
+    item.appendChild(deleteButton);
+    list.appendChild(item);
+
+  });
+
+}
+
+
+document
+  .getElementById("commentForm")
+  .addEventListener("submit", event => {
+
+    event.preventDefault();
+
+    if (!selectedPostId)
+      return;
+
+    const input =
+      document.getElementById("commentInput");
+
+    const text = input.value.trim();
+
+    if (!text)
+      return;
+
+    const posts = getPosts();
+
+    const post = posts.find(
+      item => item.id === selectedPostId
+    );
+
+    if (!post)
+      return;
+
+    const profile = getProfile();
+
+    if (!Array.isArray(post.comments))
+      post.comments = [];
+
+    post.comments.push({
+      id:
+        Date.now().toString() +
+        "-" +
+        Math.random().toString(36).slice(2),
+      username:
+        profile.username || "username",
+      text: text,
+      createdAt: new Date().toISOString()
+    });
+
+    if (!savePosts(posts))
+      return;
+
+    input.value = "";
+    renderComments(post);
+    render();
+    showToast("Comment posted!");
+
+  });
 
 
 /* =================================================
@@ -5043,3 +5371,34 @@ render();
 
 </body>
 </html>
+<script>
+function openOwnStoryFromProfile() {
+  const stories = getStories();
+  if (!stories.length) return;
+
+  openStoryViewer(stories[0].id);
+}
+
+window.addEventListener('load', () => {
+  updateProfileStoryRing();
+
+  if (!avatarContainer.dataset.storyClickBound) {
+    avatarContainer.dataset.storyClickBound = 'true';
+    avatarContainer.style.cursor = 'pointer';
+    avatarContainer.setAttribute('role', 'button');
+    avatarContainer.setAttribute('tabindex', '0');
+    avatarContainer.setAttribute('aria-label', 'View your story');
+
+    avatarContainer.addEventListener('click', openOwnStoryFromProfile);
+    avatarContainer.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openOwnStoryFromProfile();
+      }
+    });
+  }
+});
+
+window.addEventListener('storage', updateProfileStoryRing);
+setInterval(updateProfileStoryRing, 1000);
+</script>
