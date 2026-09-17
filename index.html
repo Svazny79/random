@@ -747,7 +747,8 @@ textarea.form-control {
   margin-top: 15px;
 }
 
-.multi-preview img {
+.multi-preview img,
+.multi-preview video {
   width: 100%;
   aspect-ratio: 1;
 
@@ -788,7 +789,8 @@ textarea.form-control {
   touch-action: pan-y;
 }
 
-.carousel-image {
+.carousel-image,
+.carousel-media {
   width: 100%;
   height: 100%;
 
@@ -904,6 +906,53 @@ textarea.form-control {
   font-size: 12px;
 }
 
+
+/* =========================================
+   INSTAGRAM EMBED POSTS
+========================================= */
+.instagram-post-card {
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+  background: var(--card);
+  color: var(--text);
+}
+
+.instagram-post-card .ig-icon {
+  font-size: 42px;
+}
+
+.instagram-post-card .ig-label {
+  font-weight: 700;
+}
+
+.instagram-post-card .ig-link {
+  color: var(--button);
+  font-size: 13px;
+  word-break: break-all;
+  text-align: center;
+}
+
+.instagram-embed-wrap {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: auto;
+  background: var(--card);
+}
+
+.instagram-embed-wrap blockquote.instagram-media {
+  margin: 0 !important;
+  min-width: 280px !important;
+  max-width: 540px !important;
+  width: calc(100% - 20px) !important;
+}
 
 /* =========================================
    STORY VIEWER
@@ -1659,18 +1708,20 @@ textarea.form-control {
 
           <label class="file-label">
 
-            🖼️ Choose one or more pictures
+            🖼️ Choose one or more photos or videos
 
             <input
               type="file"
               id="postImage"
-              accept="image/*"
+              accept="image/*,video/*"
               multiple
-              required
             >
 
           </label>
 
+          <div style="margin-top:8px;font-size:12px;opacity:.7;">
+            You can select photos and videos together.
+          </div>
 
           <div
             class="multi-preview"
@@ -2294,6 +2345,18 @@ function randomPostViews() {
 }
 
 
+function escapeHtml(value) {
+
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
 function normalizePost(post) {
 
   let images = [];
@@ -2879,26 +2942,29 @@ function renderPosts() {
 
       if (images[0]) {
 
-        const image =
-          document.createElement(
-            "img"
-          );
+        const media = images[0];
+        const isVideo =
+          typeof media === "object" &&
+          media.type === "video";
 
+        const mediaElement =
+          document.createElement(isVideo ? "video" : "img");
 
-        image.src =
-          images[0];
+        mediaElement.className = "carousel-media";
+        mediaElement.src =
+          typeof media === "object" ? media.src : media;
 
-        image.alt =
-          post.caption ||
-          "Post";
+        if (isVideo) {
+          mediaElement.controls = true;
+          mediaElement.muted = true;
+          mediaElement.playsInline = true;
+          mediaElement.preload = "metadata";
+        } else {
+          mediaElement.alt = post.caption || "Post";
+          mediaElement.loading = "lazy";
+        }
 
-        image.loading =
-          "lazy";
-
-
-        element.appendChild(
-          image
-        );
+        element.appendChild(mediaElement);
 
       } else {
 
@@ -2971,7 +3037,9 @@ function renderPosts() {
           ${
             images.length > 1
               ? "📷 " + images.length
-              : "📷"
+              : (images[0] && typeof images[0] === "object" && images[0].type === "video"
+                  ? "🎥"
+                  : "📷")
           }
         </span>
 
@@ -3317,16 +3385,13 @@ document
           this.files
         );
 
-
       if (!files.length)
         return;
-
 
       const button =
         document.getElementById(
           "sharePostBtn"
         );
-
 
       button.disabled =
         true;
@@ -3334,20 +3399,34 @@ document
       button.textContent =
         "Loading...";
 
-
       try {
 
         selectedPostImages =
           await Promise.all(
             files.map(
-              file =>
-                resizeImage(
-                  file,
-                  1400
-                )
+              async file => {
+
+                if (
+                  file.type &&
+                  file.type.startsWith("video/")
+                ) {
+                  return {
+                    type: "video",
+                    src: await fileToDataURL(file)
+                  };
+                }
+
+                return {
+                  type: "image",
+                  src: await resizeImage(
+                    file,
+                    1400
+                  )
+                };
+
+              }
             )
           );
-
 
         renderPostPreview();
 
@@ -3357,11 +3436,10 @@ document
           [];
 
         showToast(
-          "Could not load one of the pictures."
+          "Could not load one of the files."
         );
 
       }
-
 
       button.disabled =
         false;
@@ -3373,42 +3451,62 @@ document
   );
 
 
-function renderPostPreview() {
+function fileToDataURL(file) {
 
-  const preview =
-    document.getElementById(
-      "postPreview"
-    );
+  return new Promise(
+    (resolve, reject) => {
 
+      const reader =
+        new FileReader();
 
-  preview.innerHTML =
-    "";
-
-
-  selectedPostImages.forEach(
-    (image, index) => {
-
-      const img =
-        document.createElement(
-          "img"
+      reader.onload =
+        () => resolve(
+          reader.result
         );
 
+      reader.onerror =
+        reject;
 
-      img.src =
-        image;
-
-
-      img.alt =
-        `Selected image ${index + 1}`;
-
-
-      preview.appendChild(
-        img
+      reader.readAsDataURL(
+        file
       );
 
     }
   );
 
+}
+
+
+function renderPostPreview() {
+
+  const preview =
+    document.getElementById("postPreview");
+
+  preview.innerHTML = "";
+
+  selectedPostImages.forEach((media, index) => {
+
+    const isVideo =
+      typeof media === "object" &&
+      media.type === "video";
+
+    const element =
+      document.createElement(isVideo ? "video" : "img");
+
+    element.src =
+      typeof media === "object" ? media.src : media;
+
+    if (isVideo) {
+      element.controls = true;
+      element.muted = true;
+      element.playsInline = true;
+      element.preload = "metadata";
+    } else {
+      element.alt = `Selected image ${index + 1}`;
+    }
+
+    preview.appendChild(element);
+  });
 }
 
 
@@ -3427,13 +3525,10 @@ document
       event.preventDefault();
 
 
-      if (
-        selectedPostImages.length ===
-        0
-      ) {
+      if (selectedPostImages.length === 0) {
 
         showToast(
-          "Choose at least one picture."
+          "Choose at least one photo or video."
         );
 
         return;
@@ -4398,12 +4493,44 @@ function renderCarousel() {
     return;
 
 
-  document.getElementById(
-    "detailImage"
-  ).src =
-    currentPostImages[
-      currentImageIndex
-    ];
+  const currentMedia =
+    currentPostImages[currentImageIndex];
+
+  const carousel =
+    document.querySelector("#postCarousel");
+
+  let mediaElement =
+    document.getElementById("detailImage");
+
+  const isVideo =
+    typeof currentMedia === "object" &&
+    currentMedia.type === "video";
+
+  if (isVideo) {
+    if (!mediaElement || mediaElement.tagName !== "VIDEO") {
+      if (mediaElement) mediaElement.remove();
+      mediaElement = document.createElement("video");
+      mediaElement.id = "detailImage";
+      mediaElement.className = "carousel-image carousel-media";
+      carousel.insertBefore(mediaElement, document.getElementById("carouselNext"));
+    }
+    mediaElement.controls = true;
+    mediaElement.muted = true;
+    mediaElement.playsInline = true;
+    mediaElement.preload = "metadata";
+  } else {
+    if (!mediaElement || mediaElement.tagName !== "IMG") {
+      if (mediaElement) mediaElement.remove();
+      mediaElement = document.createElement("img");
+      mediaElement.id = "detailImage";
+      mediaElement.className = "carousel-image carousel-media";
+      mediaElement.alt = "Post image";
+      carousel.insertBefore(mediaElement, document.getElementById("carouselNext"));
+    }
+  }
+
+  mediaElement.src =
+    typeof currentMedia === "object" ? currentMedia.src : currentMedia;
 
 
   document.getElementById(
