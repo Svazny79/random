@@ -408,6 +408,7 @@ main {
   position: relative;
 
   height: 52px;
+  min-width: 72px;
 
   border: 0;
   background: transparent;
@@ -417,6 +418,21 @@ main {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: .5px;
+  cursor: pointer;
+  transition: color .2s ease, transform .2s ease;
+}
+
+.posts-nav button:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.posts-nav .nav-icon {
+  display: block;
+  font-size: 19px;
+  line-height: 20px;
+  margin-bottom: 2px;
+  font-weight: 400;
 }
 
 .posts-nav button.active {
@@ -1511,12 +1527,29 @@ textarea.form-control {
     <button
       class="active"
       type="button"
+      data-post-tab="posts"
+      aria-label="Posts"
     >
-      ▦ POSTS
+      <span class="nav-icon">▦</span>
+      POSTS
     </button>
 
-    <button type="button">
-      👤 PROFILE
+    <button
+      type="button"
+      data-post-tab="reels"
+      aria-label="Reels"
+    >
+      <span class="nav-icon">▻</span>
+      REELS
+    </button>
+
+    <button
+      type="button"
+      data-post-tab="tagged"
+      aria-label="Tagged"
+    >
+      <span class="nav-icon">♙</span>
+      TAGGED
     </button>
 
   </div>
@@ -2867,10 +2900,38 @@ function renderStories() {
    RENDER POSTS
 ================================================= */
 
+let activePostTab = "posts";
+
+function getPostsForActiveTab(posts) {
+
+  if (activePostTab === "reels") {
+    return posts.filter(post =>
+      Array.isArray(post.images) &&
+      post.images.some(media =>
+        typeof media === "object" &&
+        media.type === "video" &&
+        media.src
+      )
+    );
+  }
+
+  if (activePostTab === "tagged") {
+    return posts.filter(post =>
+      Array.isArray(post.tagged) &&
+      post.tagged.length > 0
+    );
+  }
+
+  return posts;
+}
+
 function renderPosts() {
 
-  const posts =
+  const allPosts =
     getPosts();
+
+  const posts =
+    getPostsForActiveTab(allPosts);
 
 
   postGrid.innerHTML = "";
@@ -2883,39 +2944,59 @@ function renderPosts() {
       <div class="empty">
 
         <div class="empty-icon">
-          📷
+          ${
+            activePostTab === "reels"
+              ? "▶"
+              : activePostTab === "tagged"
+                ? "♙"
+                : "📷"
+          }
         </div>
 
         <h2>
-          Share your first photo
+          ${
+            activePostTab === "reels"
+              ? "No reels yet"
+              : activePostTab === "tagged"
+                ? "No tagged posts yet"
+                : "Share your first photo"
+          }
         </h2>
 
         <p>
-          When you add posts,
-          they'll appear here.
+          ${
+            activePostTab === "reels"
+              ? "Video posts will appear here as reels."
+              : activePostTab === "tagged"
+                ? "Posts you're tagged in will appear here."
+                : "When you add posts, they'll appear here."
+          }
         </p>
 
-        <button
-          class="btn btn-primary"
-          id="emptyAddPost"
-          type="button"
-        >
-          Add your first post
-        </button>
+        ${activePostTab === "posts" ? `
+          <button
+            class="btn btn-primary"
+            id="emptyAddPost"
+            type="button"
+          >
+            Add your first post
+          </button>
+        ` : ""}
 
       </div>
 
     `;
 
 
-    document
-      .getElementById(
-        "emptyAddPost"
-      )
-      .addEventListener(
+    const emptyAddPost =
+      document.getElementById("emptyAddPost");
+
+    if (emptyAddPost) {
+      emptyAddPost.addEventListener(
         "click",
         openPostModal
       );
+    }
 
 
     return;
@@ -5478,6 +5559,34 @@ function showToast(
     );
 
 }
+
+
+/* =================================================
+   POSTS / REELS / TAGGED TABS
+================================================= */
+
+document
+  .querySelectorAll("[data-post-tab]")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      activePostTab =
+        button.dataset.postTab || "posts";
+
+      document
+        .querySelectorAll("[data-post-tab]")
+        .forEach(tab =>
+          tab.classList.toggle(
+            "active",
+            tab === button
+          )
+        );
+
+      renderPosts();
+    });
+
+  });
 
 
 /* =================================================
