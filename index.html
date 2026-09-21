@@ -534,6 +534,75 @@ main {
    POSTS
 ========================================= */
 
+
+.tagged-add-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 4px 18px;
+}
+
+.tagged-add-bar > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tagged-add-bar strong {
+  font-size: 15px;
+}
+
+.tagged-add-bar span {
+  font-size: 12px;
+  opacity: .65;
+}
+
+@media (max-width: 600px) {
+  .tagged-add-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+.tagged-account-field {
+  display: none;
+  margin-top: 4px;
+}
+
+.tagged-account-field.show {
+  display: block;
+}
+
+.tagged-account-hint {
+  font-size: 12px;
+  opacity: .65;
+  margin-top: 6px;
+}
+
+.tagged-account-badge {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  z-index: 4;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.72);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.post {
+  position: relative;
+}
+
 .post-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1797,7 +1866,7 @@ textarea.form-control {
 
     <div class="modal-header">
 
-      <h2>Create new post</h2>
+      <h2 id="postModalTitle">Create new post</h2>
 
       <button
         class="close-btn"
@@ -1853,6 +1922,22 @@ textarea.form-control {
             maxlength="500"
             placeholder="Write a caption..."
           ></textarea>
+
+        </div>
+
+        <div class="form-group tagged-account-field" id="taggedAccountField">
+
+          <label for="taggedAccountName">Account that tagged you</label>
+
+          <input
+            class="form-control"
+            id="taggedAccountName"
+            maxlength="50"
+            placeholder="@accountname"
+            autocomplete="off"
+          >
+
+          <div class="tagged-account-hint">Enter the account name that tagged you. Example: @friendname</div>
 
         </div>
 
@@ -2580,6 +2665,14 @@ function normalizePost(post) {
         ? post.comments
         : [],
 
+    tagged:
+      Boolean(post.tagged),
+
+    taggedBy:
+      typeof post.taggedBy === "string"
+        ? post.taggedBy
+        : "",
+
     createdAt:
       post.createdAt ||
       new Date().toISOString()
@@ -3039,6 +3132,7 @@ function getPostsForActiveTab(posts) {
 
   if (activePostTab === "reels") {
     return posts.filter(post =>
+      !post.tagged &&
       Array.isArray(post.images) &&
       post.images.some(media =>
         typeof media === "object" &&
@@ -3049,13 +3143,10 @@ function getPostsForActiveTab(posts) {
   }
 
   if (activePostTab === "tagged") {
-    return posts.filter(post =>
-      Array.isArray(post.tagged) &&
-      post.tagged.length > 0
-    );
+    return posts.filter(post => post.tagged === true);
   }
 
-  return posts;
+  return posts.filter(post => !post.tagged);
 }
 
 function renderPosts() {
@@ -3068,6 +3159,28 @@ function renderPosts() {
 
 
   postGrid.innerHTML = "";
+
+
+  if (activePostTab === "tagged") {
+
+    const taggedHeader = document.createElement("div");
+    taggedHeader.className = "tagged-add-bar";
+    taggedHeader.innerHTML = `
+      <div>
+        <strong>Tagged posts</strong>
+        <span>Add a post to your Tagged section.</span>
+      </div>
+      <button class="btn btn-primary" id="addTaggedPostBtn" type="button">
+        + Add tagged post
+      </button>
+    `;
+    postGrid.appendChild(taggedHeader);
+
+    const addTaggedPostBtn = document.getElementById("addTaggedPostBtn");
+    if (addTaggedPostBtn) {
+      addTaggedPostBtn.addEventListener("click", () => openPostModal("tagged"));
+    }
+  }
 
 
   if (!posts.length) {
@@ -3114,6 +3227,14 @@ function renderPosts() {
           >
             Add your first post
           </button>
+        ` : activePostTab === "tagged" ? `
+          <button
+            class="btn btn-primary"
+            id="emptyAddTaggedPost"
+            type="button"
+          >
+            + Add tagged post
+          </button>
         ` : ""}
 
       </div>
@@ -3128,6 +3249,14 @@ function renderPosts() {
       emptyAddPost.addEventListener(
         "click",
         openPostModal
+      );
+    }
+
+    const emptyAddTaggedPost = document.getElementById("emptyAddTaggedPost");
+    if (emptyAddTaggedPost) {
+      emptyAddTaggedPost.addEventListener(
+        "click",
+        () => openPostModal("tagged")
       );
     }
 
@@ -3200,6 +3329,14 @@ function renderPosts() {
           text
         );
 
+      }
+
+
+      if (post.tagged && post.taggedBy) {
+        const taggedBadge = document.createElement("div");
+        taggedBadge.className = "tagged-account-badge";
+        taggedBadge.textContent = `Tagged by ${post.taggedBy}`;
+        element.appendChild(taggedBadge);
       }
 
 
@@ -3534,6 +3671,7 @@ document
 ================================================= */
 
 let selectedPostImages = [];
+let postCreationMode = "post";
 
 
 document
@@ -3556,7 +3694,24 @@ document
   );
 
 
-function openPostModal() {
+function openPostModal(mode = "post") {
+
+  postCreationMode = mode === "tagged" ? "tagged" : "post";
+
+  const postModalTitle = document.getElementById("postModalTitle");
+  if (postModalTitle) {
+    postModalTitle.textContent = postCreationMode === "tagged" ? "Add tagged post" : "Create new post";
+  }
+
+  const taggedAccountField = document.getElementById("taggedAccountField");
+  const taggedAccountName = document.getElementById("taggedAccountName");
+  if (taggedAccountField) {
+    taggedAccountField.classList.toggle("show", postCreationMode === "tagged");
+  }
+  if (taggedAccountName) {
+    taggedAccountName.required = postCreationMode === "tagged";
+    taggedAccountName.value = "";
+  }
 
   selectedPostImages =
     [];
@@ -3765,6 +3920,15 @@ document
 
       }
 
+      if (postCreationMode === "tagged") {
+        const taggedName = (document.getElementById("taggedAccountName")?.value || "").trim();
+        if (!taggedName) {
+          showToast("Enter the account that tagged you.");
+          document.getElementById("taggedAccountName")?.focus();
+          return;
+        }
+      }
+
 
       const posts =
         getPosts();
@@ -3797,6 +3961,14 @@ document
 
         comments:
           [],
+
+        tagged:
+          postCreationMode === "tagged",
+
+        taggedBy:
+          postCreationMode === "tagged"
+            ? (document.getElementById("taggedAccountName")?.value || "").trim()
+            : "",
 
         createdAt:
           new Date().toISOString()
@@ -3836,8 +4008,12 @@ document
 
 
       showToast(
-        "Post shared!"
+        postCreationMode === "tagged"
+          ? "Tagged post added!"
+          : "Post shared!"
       );
+
+      postCreationMode = "post";
 
     }
   );
