@@ -393,6 +393,83 @@ main {
 
 
 /* =========================================
+   VAZAI POST HELPER
+========================================= */
+
+.vazai-card {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  background: var(--input);
+}
+
+.vazai-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.vazai-title {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.vazai-subtitle {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.vazai-open-btn {
+  font-size: 12px;
+  padding: 8px 12px;
+}
+
+.vazai-panel {
+  margin-top: 14px;
+}
+
+.vazai-prompt {
+  margin-top: 7px;
+  min-height: 70px;
+}
+
+.vazai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.vazai-action {
+  font-size: 12px;
+  padding: 8px 10px;
+}
+
+.vazai-result {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+
+.vazai-result-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 9px;
+}
+
+.vazai-result-actions .btn {
+  font-size: 12px;
+}
+
+/* =========================================
    POSTS NAV
 ========================================= */
 
@@ -1776,6 +1853,62 @@ textarea.form-control {
             maxlength="500"
             placeholder="Write a caption..."
           ></textarea>
+
+        </div>
+
+        <div class="vazai-card">
+
+          <div class="vazai-card-header">
+
+            <div>
+              <div class="vazai-title">✨ vazAi</div>
+              <div class="vazai-subtitle">Your AI helper for posts</div>
+            </div>
+
+            <button
+              type="button"
+              class="btn vazai-open-btn"
+              id="openVazAiBtn"
+            >
+              Open vazAi
+            </button>
+
+          </div>
+
+          <div
+            class="vazai-panel"
+            id="vazAiPanel"
+            hidden
+          >
+
+            <label for="vazAiPrompt">
+              What is this post about?
+            </label>
+
+            <textarea
+              class="form-control vazai-prompt"
+              id="vazAiPrompt"
+              maxlength="300"
+              placeholder="Example: hanging out with friends at the beach..."
+            ></textarea>
+
+            <div class="vazai-actions">
+              <button type="button" class="btn vazai-action" data-vazai-action="caption">✍️ Caption</button>
+              <button type="button" class="btn vazai-action" data-vazai-action="funny">😂 Funny</button>
+              <button type="button" class="btn vazai-action" data-vazai-action="aesthetic">✨ Aesthetic</button>
+              <button type="button" class="btn vazai-action" data-vazai-action="short">⚡ Short</button>
+              <button type="button" class="btn vazai-action" data-vazai-action="hashtags">#️⃣ Hashtags</button>
+              <button type="button" class="btn vazai-action" data-vazai-action="reel">🎬 Reel idea</button>
+            </div>
+
+            <div class="vazai-result" id="vazAiResult" hidden></div>
+
+            <div class="vazai-result-actions" id="vazAiResultActions" hidden>
+              <button type="button" class="btn btn-primary" id="useVazAiBtn">Use this</button>
+              <button type="button" class="btn" id="tryVazAiAgainBtn">Try again</button>
+            </div>
+
+          </div>
 
         </div>
 
@@ -3440,6 +3573,22 @@ function openPostModal() {
     "postPreview"
   ).innerHTML =
     "";
+
+
+  const vazAiPanel = document.getElementById("vazAiPanel");
+  const vazAiPrompt = document.getElementById("vazAiPrompt");
+  const vazAiResult = document.getElementById("vazAiResult");
+  const vazAiResultActions = document.getElementById("vazAiResultActions");
+
+  if (vazAiPanel) vazAiPanel.hidden = true;
+  if (vazAiPrompt) vazAiPrompt.value = "";
+  if (vazAiResult) {
+    vazAiResult.hidden = true;
+    vazAiResult.textContent = "";
+  }
+  if (vazAiResultActions) vazAiResultActions.hidden = true;
+  vazAiLastResult = "";
+  vazAiLastAction = "caption";
 
 
   openModal(
@@ -5588,6 +5737,141 @@ document
 
   });
 
+
+/* =================================================
+   VAZAI POST HELPER
+================================================= */
+
+let vazAiLastAction = "caption";
+let vazAiLastResult = "";
+
+function openVazAi() {
+  const panel = document.getElementById("vazAiPanel");
+  if (!panel) return;
+  panel.hidden = !panel.hidden;
+
+  if (!panel.hidden) {
+    const prompt = document.getElementById("vazAiPrompt");
+    const caption = document.getElementById("postCaption");
+    if (prompt && !prompt.value.trim() && caption && caption.value.trim()) {
+      prompt.value = caption.value.trim();
+    }
+    if (prompt) prompt.focus();
+  }
+}
+
+function getVazAiTopic() {
+  const prompt = document.getElementById("vazAiPrompt");
+  const caption = document.getElementById("postCaption");
+  const topic = (prompt && prompt.value.trim()) || (caption && caption.value.trim()) || "my latest post";
+  return topic.replace(/\s+/g, " ").trim();
+}
+
+function vazAiGenerate(action) {
+  vazAiLastAction = action;
+  const topic = getVazAiTopic();
+  const clean = topic.replace(/[.!?]+$/, "");
+  const lower = clean.toLowerCase();
+
+  const templates = {
+    caption: [
+      `Good moments, good energy. ${clean} ✨`,
+      `Just one of those moments worth posting. ${clean} 📸`,
+      `${clean} — definitely a moment to remember. 🤍`
+    ],
+    funny: [
+      `${clean}... somehow this seemed like a good idea 😂`,
+      `POV: ${clean} and absolutely no regrets 😂`,
+      `Me pretending I planned ${clean} the whole time 💀😂`
+    ],
+    aesthetic: [
+      `${clean} ✨ collecting little moments that feel like everything.`,
+      `${clean} ☁️ a moment, a mood, a memory.`,
+      `${clean} 🤍 letting the moment speak for itself.`
+    ],
+    short: [
+      `${clean} ✨`,
+      `${clean}. 🤍`,
+      `Good times. ${clean} 📸`
+    ],
+    hashtags: [
+      `#${slugHashtag(clean)} #memories #goodtimes #photooftheday #vibes`,
+      `#${slugHashtag(clean)} #life #moments #daily #explore`,
+      `#${slugHashtag(clean)} #instagood #memories #friends #weekend`
+    ],
+    reel: [
+      `Reel idea: Start with a quick clip introducing ${clean}, then use 3–5 fast cuts of the best moments. Finish with a short text overlay: “Would do it again.” 🎬`,
+      `Reel idea: Use a before → during → after sequence for ${clean}, with the beat changing on each transition. 🎬`,
+      `Reel idea: Make a 7–10 second highlight reel of ${clean} with quick zooms, one favorite clip in slow motion, and a simple ending shot. 🎬`
+    ]
+  };
+
+  let options = templates[action] || templates.caption;
+
+  if (action === "hashtags") {
+    const extra = lower.includes("beach") ? " #beach #summer" : "";
+    options = options.map(text => text + extra);
+  }
+
+  const result = options[Math.floor(Math.random() * options.length)];
+  vazAiLastResult = result;
+
+  const resultBox = document.getElementById("vazAiResult");
+  const actions = document.getElementById("vazAiResultActions");
+  if (resultBox) {
+    resultBox.textContent = result;
+    resultBox.hidden = false;
+  }
+  if (actions) actions.hidden = false;
+}
+
+function slugHashtag(text) {
+  const words = text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 3);
+
+  return words.join("") || "post";
+}
+
+const openVazAiBtn = document.getElementById("openVazAiBtn");
+if (openVazAiBtn) {
+  openVazAiBtn.addEventListener("click", openVazAi);
+}
+
+document.querySelectorAll("[data-vazai-action]").forEach(button => {
+  button.addEventListener("click", () => {
+    vazAiGenerate(button.dataset.vazaiAction || "caption");
+  });
+});
+
+const useVazAiBtn = document.getElementById("useVazAiBtn");
+if (useVazAiBtn) {
+  useVazAiBtn.addEventListener("click", () => {
+    const caption = document.getElementById("postCaption");
+    if (!caption || !vazAiLastResult) return;
+
+    if (vazAiLastAction === "hashtags" || vazAiLastAction === "reel") {
+      caption.value = caption.value.trim()
+        ? `${caption.value.trim()}\n\n${vazAiLastResult}`
+        : vazAiLastResult;
+    } else {
+      caption.value = vazAiLastResult;
+    }
+
+    caption.dispatchEvent(new Event("input", { bubbles: true }));
+    showToast("vazAi added it to your caption!");
+  });
+}
+
+const tryVazAiAgainBtn = document.getElementById("tryVazAiAgainBtn");
+if (tryVazAiAgainBtn) {
+  tryVazAiAgainBtn.addEventListener("click", () => {
+    vazAiGenerate(vazAiLastAction);
+  });
+}
 
 /* =================================================
    START
