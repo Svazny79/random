@@ -581,6 +581,17 @@ main {
   margin-top: 6px;
 }
 
+.caption-mention {
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--accent, #0095f6);
+}
+
+.caption-mention:hover {
+  text-decoration: underline;
+}
+
 .tagged-account-badge {
   position: absolute;
   left: 8px;
@@ -1937,7 +1948,7 @@ textarea.form-control {
             autocomplete="off"
           >
 
-          <div class="tagged-account-hint">Enter the account name that tagged you. Example: @friendname</div>
+          <div class="tagged-account-hint">Enter the account that originally posted/tagged you. Example: @john</div>
 
         </div>
 
@@ -2670,7 +2681,7 @@ function normalizePost(post) {
 
     taggedBy:
       typeof post.taggedBy === "string"
-        ? post.taggedBy
+        ? normalizeTaggedAccount(post.taggedBy)
         : "",
 
     createdAt:
@@ -2988,7 +2999,7 @@ function renderProfile() {
 
 
   postCount.textContent =
-    getPosts().length;
+    getPosts().filter(post => !post.tagged).length;
 
 }
 
@@ -3121,6 +3132,27 @@ function renderStories() {
 
 }
 
+
+/* =================================================
+   CAPTION MENTIONS
+================================================= */
+
+function formatCaptionMentions(text) {
+
+  const safe = escapeHTML(String(text || ""));
+
+  return safe.replace(
+    /(^|[^A-Za-z0-9_])(@[A-Za-z0-9._-]{1,50})/g,
+    (match, before, mention) =>
+      `${before}<span class="caption-mention" data-mention="${mention.slice(1)}">${mention}</span>`
+  ).replace(/\n/g, "<br>");
+
+}
+
+function normalizeTaggedAccount(value) {
+  const clean = String(value || "").trim().replace(/^@+/, "");
+  return clean ? `@${clean}` : "";
+}
 
 /* =================================================
    RENDER POSTS
@@ -3335,7 +3367,7 @@ function renderPosts() {
       if (post.tagged && post.taggedBy) {
         const taggedBadge = document.createElement("div");
         taggedBadge.className = "tagged-account-badge";
-        taggedBadge.textContent = `Tagged by ${post.taggedBy}`;
+        taggedBadge.textContent = `Posted by ${post.taggedBy}`;
         element.appendChild(taggedBadge);
       }
 
@@ -3967,7 +3999,7 @@ document
 
         taggedBy:
           postCreationMode === "tagged"
-            ? (document.getElementById("taggedAccountName")?.value || "").trim()
+            ? normalizeTaggedAccount(document.getElementById("taggedAccountName")?.value || "")
             : "",
 
         createdAt:
@@ -4822,20 +4854,25 @@ function openPostDetail(
     getProfile();
 
 
+  const detailPoster =
+    post.tagged && post.taggedBy
+      ? post.taggedBy
+      : "@" +
+        (
+          profile.username ||
+          "username"
+        );
+
   document.getElementById(
     "detailUsername"
   ).textContent =
-    "@" +
-    (
-      profile.username ||
-      "username"
-    );
+    detailPoster;
 
 
   document.getElementById(
     "detailCaption"
-  ).textContent =
-    post.caption || "";
+  ).innerHTML =
+    formatCaptionMentions(post.caption || "");
 
 
   updateDetailLikes(
