@@ -1602,6 +1602,19 @@ textarea.form-control {
   border-color: var(--accent);
 }
 
+
+/* ===== ACHIEVEMENT BADGES ===== */
+.badges-section{margin:0 20px 22px;padding:14px 0;border-top:1px solid var(--border)}
+.badges-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.badges-title{font-weight:800;font-size:14px}.badges-list{display:flex;flex-wrap:wrap;gap:8px}
+.achievement-badge{position:relative;width:42px;height:42px;border:1px solid var(--border);border-radius:50%;background:var(--input);display:flex;align-items:center;justify-content:center;font-size:21px;cursor:default;transition:.18s}
+.achievement-badge:hover{transform:translateY(-3px) scale(1.08);box-shadow:0 7px 18px rgba(0,0,0,.18)}
+.achievement-tooltip{position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%) translateY(4px);width:235px;padding:10px 12px;border-radius:10px;background:#111;color:#fff;font-size:11px;line-height:1.4;text-align:left;opacity:0;pointer-events:none;transition:.15s;z-index:30}
+.achievement-badge:hover .achievement-tooltip{opacity:1;transform:translateX(-50%) translateY(0)}.achievement-tooltip strong{display:block;margin-bottom:3px;font-size:12px}
+.badges-modal-list{display:grid;gap:10px}.achievement-row{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:12px;padding:11px;border:1px solid var(--border);border-radius:12px;background:var(--input)}
+.achievement-row-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;background:var(--card);border:1px solid var(--border)}
+.achievement-row-name{font-weight:800;font-size:13px}.achievement-row-description{margin-top:2px;color:var(--muted);font-size:11px}.achievement-status{font-size:11px;font-weight:800}.achievement-status.earned{color:#22a447}.achievement-status.locked{color:var(--muted)}
+
 </style>
 </head>
 
@@ -1774,6 +1787,12 @@ textarea.form-control {
 
   </section>
 
+
+
+<section class="badges-section" id="badgesSection">
+  <div class="badges-title-row"><div class="badges-title">🏅 Achievements</div><button class="btn" type="button" id="viewBadgesBtn">View all</button></div>
+  <div class="badges-list" id="earnedBadgesList"></div>
+</section>
 
   <!-- POSTS NAV -->
 
@@ -6620,8 +6639,65 @@ cleanStories();
 
 render();
 
+
+/* ===== ACHIEVEMENT SYSTEM ===== */
+const ACHIEVEMENTS=[
+{id:'first_post',icon:'📸',name:'First Shot',req:'Create your first regular post.',test:s=>s.posts>=1},
+{id:'post_master',icon:'🏆',name:'Post Master',req:'Create 100 regular posts.',test:s=>s.posts>=100},
+{id:'photographer',icon:'📷',name:'Photographer',req:'Create 25 photo posts.',test:s=>s.photoPosts>=25},
+{id:'reel_creator',icon:'🎬',name:'Reel Creator',req:'Create 25 Reels.',test:s=>s.reels>=25},
+{id:'director',icon:'🎥',name:'Director',req:'Create 100 Reels.',test:s=>s.reels>=100},
+{id:'storyteller',icon:'📖',name:'Storyteller',req:'Create 50 stories.',test:s=>s.stories>=50},
+{id:'gallery',icon:'🖼️',name:'Gallery',req:'Upload 100 photos.',test:s=>s.photos>=100},
+{id:'filmmaker',icon:'🎞️',name:'Filmmaker',req:'Upload 100 videos.',test:s=>s.videos>=100},
+{id:'loved',icon:'❤️',name:'Loved',req:'Receive 1,000 total likes.',test:s=>s.likes>=1000},
+{id:'viral',icon:'❤️‍🔥',name:'Viral',req:'Receive 10,000 likes on one post.',test:s=>s.maxPostLikes>=10000},
+{id:'conversation',icon:'💬',name:'Conversation Starter',req:'Receive 100 comments.',test:s=>s.comments>=100},
+{id:'talk',icon:'🗣️',name:'Talk of the Town',req:'Receive 1,000 comments.',test:s=>s.comments>=1000},
+{id:'tagged',icon:'🏷️',name:'Tagged',req:'Receive your first tagged post.',test:s=>s.tagged>=1},
+{id:'social',icon:'🤝',name:'Social',req:'Reach 100 followers.',test:s=>s.followers>=100},
+{id:'community',icon:'👥',name:'Community',req:'Reach 1,000 followers.',test:s=>s.followers>=1000},
+{id:'rising',icon:'🚀',name:'Rising Star',req:'Reach 10,000 followers.',test:s=>s.followers>=10000},
+{id:'superstar',icon:'🌌',name:'Superstar',req:'Reach 100,000 followers.',test:s=>s.followers>=100000},
+{id:'universe',icon:'🪐',name:'Universe',req:'Reach 1,000,000 followers.',test:s=>s.followers>=1000000},
+{id:'og',icon:'⭐',name:'OG',req:'Reach the one-year account milestone.',test:s=>s.accountAgeDays>=365},
+{id:'early_member',icon:'🏅',name:'Early Member',req:'Be marked as an early member.',test:s=>s.earlyMember},
+{id:'og_elite',icon:'💫',name:'OG Elite',req:'Be OG and reach 10,000 total likes.',test:s=>s.accountAgeDays>=365&&s.likes>=10000},
+{id:'og_legend',icon:'👑',name:'OG Legend',req:'Be OG and reach 100,000 total likes.',test:s=>s.accountAgeDays>=365&&s.likes>=100000},
+{id:'og_diamond',icon:'💎',name:'OG Diamond',req:'Be OG and reach 1,000,000 total views.',test:s=>s.accountAgeDays>=365&&s.views>=1000000},
+{id:'elite',icon:'💎',name:'Elite',req:'Reach 50,000 total likes.',test:s=>s.likes>=50000},
+{id:'legend',icon:'👑',name:'Legend',req:'Reach 100,000 total likes.',test:s=>s.likes>=100000},
+{id:'icon',icon:'🔥',name:'Icon',req:'Reach 250,000 total likes.',test:s=>s.likes>=250000},
+{id:'star',icon:'🌟',name:'Star',req:'Reach 500,000 total views.',test:s=>s.views>=500000},
+{id:'champion',icon:'🏆',name:'Champion',req:'Reach 1,000,000 total views.',test:s=>s.views>=1000000},
+{id:'diamond',icon:'💠',name:'Diamond',req:'Reach 1,000,000 total likes.',test:s=>s.likes>=1000000},
+{id:'unstoppable',icon:'⚡',name:'Unstoppable',req:'Create 100 regular posts.',test:s=>s.posts>=100},
+{id:'vazai_explorer',icon:'🤖',name:'vazAi Explorer',req:'Use vazAi once.',test:s=>s.vazaiUses>=1},
+{id:'vazai_creator',icon:'✨',name:'vazAi Creator',req:'Generate 10 vazAi results.',test:s=>s.vazaiUses>=10},
+{id:'vazai_pro',icon:'🚀',name:'vazAi Pro',req:'Generate 100 vazAi results.',test:s=>s.vazaiUses>=100},
+{id:'ai_master',icon:'🧠',name:'AI Master',req:'Use every vazAi feature.',test:s=>s.vazaiFeatures>=7},
+{id:'rare',icon:'💎',name:'Rare',req:'Reach 25,000 likes and 50 posts.',test:s=>s.likes>=25000&&s.posts>=50},
+{id:'iconic',icon:'🌟',name:'Iconic',req:'Reach 500,000 views and 100,000 likes.',test:s=>s.views>=500000&&s.likes>=100000},
+{id:'immortal',icon:'🔱',name:'Immortal',req:'Unlock 30 other achievements.',test:s=>s.earnedCount>=30},
+{id:'completion',icon:'🏆',name:'100%',req:'Unlock every other achievement.',test:s=>s.earnedCount>=ACHIEVEMENTS.length-1}
+];
+function achievementStats(){
+ const posts=Array.isArray(window.posts)?window.posts:[], stories=Array.isArray(window.stories)?window.stories:[];
+ const regular=posts.filter(p=>!(p&&p.tagged&&p.taggedBy)), tagged=posts.length-regular.length;
+ let likes=0,comments=0,views=0,maxPostLikes=0,reels=0,photoPosts=0,photos=0,videos=0;
+ regular.forEach(p=>{const media=Array.isArray(p.images)?p.images:[];const vr=media.some(m=>m&&typeof m==='object'&&m.type==='video');vr?reels++:photoPosts++;media.forEach(m=>m&&typeof m==='object'&&m.type==='video'?videos++:photos++);const l=Number(p.likes)||0;likes+=l;maxPostLikes=Math.max(maxPostLikes,l);views+=Number(p.views)||0;comments+=Array.isArray(p.comments)?p.comments.length:Number(p.commentCount)||0});
+ const f=String((window.profile&&window.profile.followers)||'17000').replace(/,/g,''); const followers=Number(f.replace(/k$/i,'000'))||17000; const created=(window.profile&&window.profile.createdAt)||localStorage.getItem('profileCreatedAt');
+ return {posts:regular.length,reels,photoPosts,photos,videos,stories:stories.length,tagged,likes,maxPostLikes,comments,views,followers,accountAgeDays:created?Math.floor((Date.now()-new Date(created).getTime())/86400000):0,earlyMember:localStorage.getItem('earlyMember')==='true',vazaiUses:Number(localStorage.getItem('vazaiUses')||0),vazaiFeatures:Number(localStorage.getItem('vazaiFeatures')||0),earnedCount:0};
+}
+function renderAchievements(){const st=achievementStats();let earned=ACHIEVEMENTS.filter(a=>{try{return a.test(st)}catch{return false}});st.earnedCount=earned.length;earned=ACHIEVEMENTS.filter(a=>{try{return a.test(st)}catch{return false}});const ids=new Set(earned.map(a=>a.id));const strip=document.getElementById('earnedBadgesList');if(strip)strip.innerHTML=earned.length?earned.map(a=>`<div class="achievement-badge"><span>${a.icon}</span><div class="achievement-tooltip"><strong>${a.icon} ${a.name}</strong>${a.req}</div></div>`).join(''):'<span style="font-size:12px;color:var(--muted)">No badges earned yet.</span>';const list=document.getElementById('allBadgesList');if(list)list.innerHTML=ACHIEVEMENTS.map(a=>{const ok=ids.has(a.id);return `<div class="achievement-row"><div class="achievement-row-icon">${a.icon}</div><div><div class="achievement-row-name">${a.name}</div><div class="achievement-row-description">${a.req}</div></div><div class="achievement-status ${ok?'earned':'locked'}">${ok?'EARNED':'LOCKED'}</div></div>`}).join('')}
+document.addEventListener('DOMContentLoaded',()=>{if(!localStorage.getItem('profileCreatedAt'))localStorage.setItem('profileCreatedAt',new Date().toISOString());renderAchievements();document.getElementById('viewBadgesBtn')?.addEventListener('click',()=>{renderAchievements();document.getElementById('badgesModal')?.classList.add('show')});document.querySelectorAll('[data-close="badgesModal"]').forEach(b=>b.addEventListener('click',()=>document.getElementById('badgesModal')?.classList.remove('show')));setInterval(()=>{try{renderAchievements()}catch{}},1500)});
+
 </script>
 
+
+<div class="modal-backdrop" id="badgesModal">
+  <div class="modal"><div class="modal-header"><h2>🏅 Badges & Achievements</h2><button class="close-btn" type="button" data-close="badgesModal">×</button></div><div class="modal-body"><div class="badges-modal-list" id="allBadgesList"></div></div></div>
+</div>
 </body>
 </html>
 <script>
