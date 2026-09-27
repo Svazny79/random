@@ -2601,17 +2601,11 @@ const ACCOUNTS_KEY =
    SEARCH ACCOUNTS
 ================================================= */
 
-const defaultSearchAccounts = [
-  { username:"kingkenny", name:"Kenny", bio:"Just living life 👑", posts:84, followers:18400, following:721, avatar:null },
-  { username:"jennyxo", name:"Jenny", bio:"Photos, memories & good vibes ✨", posts:126, followers:32700, following:932, avatar:null },
-  { username:"mike24", name:"Mike", bio:"Sports • friends • weekends", posts:58, followers:9100, following:614, avatar:null },
-  { username:"sophiaa", name:"Sophia", bio:"Creating little moments 📸", posts:203, followers:45200, following:388, avatar:null },
-  { username:"johnsmith", name:"John Smith", bio:"Private account 🔒", posts:41, followers:6800, following:502, avatar:null }
-];
-
+/* Search accounts are 100% user-created.
+   There are no preset/searchable accounts. */
 function getSearchAccounts() {
   const saved = readJSON(ACCOUNTS_KEY);
-  return Array.isArray(saved) ? saved : defaultSearchAccounts;
+  return Array.isArray(saved) ? saved : [];
 }
 
 function saveSearchAccounts(accounts) {
