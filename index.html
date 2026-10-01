@@ -1615,13 +1615,6 @@ textarea.form-control {
 .achievement-row-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;background:var(--card);border:1px solid var(--border)}
 .achievement-row-name{font-weight:800;font-size:13px}.achievement-row-description{margin-top:2px;color:var(--muted);font-size:11px}.achievement-status{font-size:11px;font-weight:800}.achievement-status.earned{color:#22a447}.achievement-status.locked{color:var(--muted)}
 
-
-/* FOLLOW + SAVED */
-.follow-btn.following{background:var(--input);color:var(--text);border-color:var(--border)}
-.save-post-btn{border:0;background:transparent;font-size:20px;cursor:pointer;padding:4px;line-height:1}
-.saved-section{display:none;padding:20px}.saved-section.active{display:block}
-.saved-empty{text-align:center;color:var(--muted);padding:70px 20px}.saved-empty-icon{font-size:42px;margin-bottom:12px}
-
 </style>
 </head>
 
@@ -1689,8 +1682,6 @@ textarea.form-control {
      MAIN
 ========================================= -->
 
-
-<section class="saved-section" id="savedSection"><div class="section-header"><h2>Saved</h2></div><div class="post-grid" id="savedPostsGrid"></div><div class="saved-empty" id="savedEmpty"><div class="saved-empty-icon">🔖</div><strong>No saved posts yet</strong><div>Posts you save will appear here.</div></div></section>
 <main>
 
   <!-- PROFILE -->
@@ -6690,7 +6681,7 @@ function achievementStats(){
 function renderAchievements(){const st=achievementStats();let earned=ACHIEVEMENTS.filter(a=>{try{return a.test(st)}catch{return false}});st.earnedCount=earned.length;earned=ACHIEVEMENTS.filter(a=>{try{return a.test(st)}catch{return false}});const ids=new Set(earned.map(a=>a.id));const strip=document.getElementById('earnedBadgesList');if(strip)strip.innerHTML=earned.length?earned.map(a=>`<div class="achievement-badge"><span>${a.icon}</span><div class="achievement-tooltip"><strong>${a.icon} ${a.name}</strong>${a.req}</div></div>`).join(''):'<span style="font-size:12px;color:var(--muted)">No badges earned yet.</span>';const list=document.getElementById('allBadgesList');if(list)list.innerHTML=ACHIEVEMENTS.map(a=>{const ok=ids.has(a.id);return `<div class="achievement-row"><div class="achievement-row-icon">${a.icon}</div><div><div class="achievement-row-name">${a.name}</div><div class="achievement-row-description">${a.req}</div></div><div class="achievement-status ${ok?'earned':'locked'}">${ok?'EARNED':'LOCKED'}</div></div>`}).join('')}
 document.addEventListener('DOMContentLoaded',()=>{if(!localStorage.getItem('profileCreatedAt'))localStorage.setItem('profileCreatedAt',new Date().toISOString());renderAchievements();document.getElementById('viewBadgesBtn')?.addEventListener('click',()=>{renderAchievements();document.getElementById('badgesModal')?.classList.add('show')});document.querySelectorAll('[data-close="badgesModal"]').forEach(b=>b.addEventListener('click',()=>document.getElementById('badgesModal')?.classList.remove('show')));setInterval(()=>{try{renderAchievements()}catch{}},1500)});
 
-\n/* FOLLOW SYSTEM + SAVED POSTS */\nconst FOLLOWING_KEY='userFollowingAccounts', SAVED_KEY='savedPostIds';\nfunction getFollowing(){try{return JSON.parse(localStorage.getItem(FOLLOWING_KEY)||'[]')}catch{return[]}}\nfunction isFollowing(u){return getFollowing().includes(String(u||'').replace(/^@+/,'').toLowerCase())}\nfunction toggleFollow(u){u=String(u||'').replace(/^@+/,'').toLowerCase();if(!u)return;let a=getFollowing(),i=a.indexOf(u);if(i<0)a.push(u);else a.splice(i,1);localStorage.setItem(FOLLOWING_KEY,JSON.stringify(a));document.querySelectorAll('[data-follow-account]').forEach(b=>{if(String(b.dataset.followAccount).replace(/^@+/,'').toLowerCase()===u){let f=isFollowing(u);b.textContent=f?'Following':'Follow';b.classList.toggle('following',f)}})}\nfunction getSaved(){try{return JSON.parse(localStorage.getItem(SAVED_KEY)||'[]').map(String)}catch{return[]}}\nfunction postId(p,i){return String(p?.id??p?.createdAt??p?.timestamp??i)}\nfunction toggleSaved(id){let a=getSaved(),i=a.indexOf(String(id));if(i<0)a.push(String(id));else a.splice(i,1);localStorage.setItem(SAVED_KEY,JSON.stringify(a));updateSaveButtons();renderSaved()}\nfunction updateSaveButtons(){let a=new Set(getSaved());document.querySelectorAll('[data-save-post]').forEach(b=>{let s=a.has(String(b.dataset.savePost));b.classList.toggle('saved',s);b.textContent='🔖';b.title=s?'Remove from saved':'Save post'})}\nfunction renderSaved(){let g=document.getElementById('savedPostsGrid'),e=document.getElementById('savedEmpty');if(!g||!e)return;let ps=Array.isArray(window.posts)?window.posts:[],ids=new Set(getSaved());let items=ps.map((p,i)=>[p,i]).filter(([p,i])=>ids.has(postId(p,i)));e.style.display=items.length?'none':'block';g.innerHTML=items.map(([p,i])=>{let m=Array.isArray(p.images)?p.images[0]:'';let s=typeof m==='string'?m:(m?.src||'');return `<article class="post" data-post-index="${i}">${s?`<img src="${s}" alt="">`:''}<button type="button" class="save-post-btn saved" data-save-post="${postId(p,i)}">🔖</button></article>`}).join('');updateSaveButtons()}\ndocument.addEventListener('click',e=>{let f=e.target.closest('[data-follow-account]');if(f){e.preventDefault();toggleFollow(f.dataset.followAccount);return}let s=e.target.closest('[data-save-post]');if(s){e.preventDefault();toggleSaved(s.dataset.savePost);return}let n=e.target.closest('[data-show-saved]');if(n){e.preventDefault();document.getElementById('savedSection')?.classList.add('active');let p=document.getElementById('postsSection');if(p)p.style.display='none';renderSaved()}});\ndocument.addEventListener('DOMContentLoaded',()=>{renderSaved();updateSaveButtons()});\nsetInterval(updateSaveButtons,1500);\n</script>
+</script>
 
 
 </body>
