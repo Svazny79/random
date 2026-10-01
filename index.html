@@ -1615,6 +1615,24 @@ textarea.form-control {
 .achievement-row-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;background:var(--card);border:1px solid var(--border)}
 .achievement-row-name{font-weight:800;font-size:13px}.achievement-row-description{margin-top:2px;color:var(--muted);font-size:11px}.achievement-status{font-size:11px;font-weight:800}.achievement-status.earned{color:#22a447}.achievement-status.locked{color:var(--muted)}
 
+
+
+
+
+/* CUSTOM COLOR + BRIGHTNESS THEME */
+.theme-customizer{position:relative;display:flex;align-items:center}
+.theme-panel{display:none;position:absolute;right:0;top:calc(100% + 10px);width:245px;padding:15px;border:1px solid var(--border);border-radius:14px;background:var(--card);box-shadow:var(--shadow);z-index:100}
+.theme-panel.show{display:block}
+.theme-panel-title{font-weight:700;font-size:14px;margin-bottom:12px}
+.theme-control{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;margin:12px 0;color:var(--text)}
+.theme-control input[type="color"]{width:48px;height:34px;padding:2px;border:1px solid var(--border);border-radius:8px;background:var(--input);cursor:pointer}
+.brightness-control{display:block}
+.brightness-control span{display:block;margin-bottom:7px}
+.brightness-control input[type="range"]{width:100%;accent-color:var(--button);cursor:pointer}
+.theme-reset{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--input);color:var(--text);cursor:pointer;font-size:12px}
+.theme-reset:hover{filter:brightness(.96)}
+@media(max-width:600px){.theme-panel{right:-45px;width:225px}}
+
 </style>
 </head>
 
@@ -1671,6 +1689,22 @@ textarea.form-control {
         ☾
       </button>
 
+      <div class="theme-customizer" id="themeCustomizer">
+        <button class="icon-btn" id="colorThemeBtn" title="Customize colors" type="button">🎨</button>
+        <div class="theme-panel" id="themePanel">
+          <div class="theme-panel-title">Customize theme</div>
+          <label class="theme-control">
+            <span>Color</span>
+            <input id="themeColorPicker" type="color" value="#fafafa" aria-label="Choose theme color">
+          </label>
+          <label class="theme-control brightness-control">
+            <span>Brightness</span>
+            <input id="themeBrightness" type="range" min="15" max="100" value="98" step="1" aria-label="Theme brightness">
+          </label>
+          <button class="theme-reset" id="themeReset" type="button">Reset colors</button>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -1681,6 +1715,7 @@ textarea.form-control {
 <!-- =========================================
      MAIN
 ========================================= -->
+
 
 <main>
 
@@ -6012,95 +6047,84 @@ document.addEventListener(
 
 
 /* =================================================
-   THEME
+   THEME + CUSTOM COLORS
 ================================================= */
 
-const themeToggle =
-  document.getElementById(
-    "themeToggle"
-  );
+const themeToggle = document.getElementById("themeToggle");
+const colorThemeBtn = document.getElementById("colorThemeBtn");
+const themePanel = document.getElementById("themePanel");
+const themeColorPicker = document.getElementById("themeColorPicker");
+const themeBrightness = document.getElementById("themeBrightness");
+const themeReset = document.getElementById("themeReset");
 
-
-function loadTheme() {
-
-  let theme =
-    localStorage.getItem(
-      THEME_KEY
-    );
-
-
-  if (!theme) {
-
-    theme =
-      localStorage.getItem(
-        "private_profile_theme_v4"
-      );
-
-  }
-
-
-  if (!theme) {
-
-    theme =
-      localStorage.getItem(
-        "private_profile_theme_v3"
-      );
-
-  }
-
-
-  if (
-    theme === "dark"
-  ) {
-
-    document.body.classList.add(
-      "dark"
-    );
-
-    themeToggle.textContent =
-      "☀";
-
-  } else {
-
-    themeToggle.textContent =
-      "☾";
-
-  }
-
+function hexToHsl(hex){
+  hex = String(hex || "#fafafa").replace("#", "");
+  if(hex.length===3) hex=hex.split("").map(c=>c+c).join("");
+  const r=parseInt(hex.slice(0,2),16)/255,g=parseInt(hex.slice(2,4),16)/255,b=parseInt(hex.slice(4,6),16)/255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
+  let h=0,s=0,l=(max+min)/2;
+  if(d){s=d/(1-Math.abs(2*l-1));switch(max){case r:h=60*((g-b)/d%6);break;case g:h=60*((b-r)/d+2);break;default:h=60*((r-g)/d+4)}}
+  if(h<0)h+=360;
+  return {h,s:s*100,l:l*100};
 }
 
+function applyCustomTheme(){
+  const color=themeColorPicker?.value || localStorage.getItem("private_profile_color") || "#fafafa";
+  const brightness=Number(themeBrightness?.value || localStorage.getItem("private_profile_brightness") || 98);
+  const hsl=hexToHsl(color);
+  const light=Math.max(8,Math.min(98,brightness));
+  const darkText=light>55;
+  document.documentElement.style.setProperty("--bg",`hsl(${hsl.h} ${Math.max(5,hsl.s*0.55)}% ${light}%)`);
+  document.documentElement.style.setProperty("--card",`hsl(${hsl.h} ${Math.max(4,hsl.s*0.42)}% ${Math.min(100,light+3)}%)`);
+  document.documentElement.style.setProperty("--input",`hsl(${hsl.h} ${Math.max(4,hsl.s*0.34)}% ${Math.max(5,light-7)}%)`);
+  document.documentElement.style.setProperty("--border",`hsl(${hsl.h} ${Math.max(4,hsl.s*0.25)}% ${Math.max(15,light-22)}%)`);
+  document.documentElement.style.setProperty("--text",darkText?"#111":"#f5f5f5");
+  document.documentElement.style.setProperty("--muted",darkText?"#666":"#b8b8b8");
+  document.documentElement.style.setProperty("--button",`hsl(${hsl.h} ${Math.max(55,hsl.s)}% ${darkText?42:68}%)`);
+  document.documentElement.style.setProperty("--input-bg",`hsl(${hsl.h} ${Math.max(4,hsl.s*0.34)}% ${Math.max(5,light-7)}%)`);
+  document.body.classList.remove("dark");
+  if(themeColorPicker)themeColorPicker.value=color;
+  if(themeBrightness)themeBrightness.value=brightness;
+  if(themeToggle)themeToggle.textContent=darkText?"☾":"☀";
+  localStorage.setItem("private_profile_color",color);
+  localStorage.setItem("private_profile_brightness",String(brightness));
+  localStorage.setItem(THEME_KEY,"custom");
+}
 
-themeToggle.addEventListener(
-  "click",
-  () => {
+function resetCustomTheme(){
+  themeColorPicker.value="#fafafa";
+  themeBrightness.value="98";
+  applyCustomTheme();
+  showToast("Theme colors reset.");
+}
 
-    document.body.classList.toggle(
-      "dark"
-    );
+function loadTheme(){
+  const color=localStorage.getItem("private_profile_color");
+  const brightness=localStorage.getItem("private_profile_brightness");
+  if(color && themeColorPicker)themeColorPicker.value=color;
+  if(brightness && themeBrightness)themeBrightness.value=brightness;
+  if(color || brightness){applyCustomTheme();return;}
+  const oldTheme=localStorage.getItem(THEME_KEY) || localStorage.getItem("private_profile_theme_v4") || localStorage.getItem("private_profile_theme_v3");
+  if(oldTheme==="dark"){themeColorPicker.value="#111111";themeBrightness.value="18";}
+  applyCustomTheme();
+}
 
+themeToggle?.addEventListener("click",()=>{
+  const current=Number(themeBrightness.value||98);
+  themeBrightness.value=String(current>55?25:98);
+  applyCustomTheme();
+});
 
-    const dark =
-      document.body.classList.contains(
-        "dark"
-      );
+colorThemeBtn?.addEventListener("click",event=>{
+  event.stopPropagation();
+  themePanel?.classList.toggle("show");
+});
 
-
-    localStorage.setItem(
-      THEME_KEY,
-      dark
-        ? "dark"
-        : "light"
-    );
-
-
-    themeToggle.textContent =
-      dark
-        ? "☀"
-        : "☾";
-
-  }
-);
-
+themePanel?.addEventListener("click",event=>event.stopPropagation());
+themeColorPicker?.addEventListener("input",applyCustomTheme);
+themeBrightness?.addEventListener("input",applyCustomTheme);
+themeReset?.addEventListener("click",resetCustomTheme);
+document.addEventListener("click",()=>themePanel?.classList.remove("show"));
 
 /* =================================================
    IMAGE RESIZER
